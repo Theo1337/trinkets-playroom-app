@@ -1,0 +1,35 @@
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Movies {
+    id Int @id @default(autoincrement())
+    name String
+    image String?
+    date DateTime @db.Timestamp(0)
+    watched Boolean @default(false)
+    dateWatched DateTime? @db.Timestamp(0)
+}
+
+model Quotes {
+    id Int @id @default(autoincrement())
+    quote String
+    author String
+    authorId String?
+    date DateTime @db.Timestamp(0)
+}
+
+model Counters {
+    id Int @id @default(autoincrement())
+    name String
+    value Int @default(0)
+    date DateTime @db.Timestamp(0)
+    daily Boolean @default(false)
+    lastUpdated DateTime @db.Timestamp(0)
+}
