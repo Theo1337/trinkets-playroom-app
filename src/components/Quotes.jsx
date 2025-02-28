@@ -20,7 +20,7 @@ import { Trash2 } from "lucide-react";
 import { format, set, setDefaultOptions } from "date-fns";
 import { ptBR } from "date-fns/locale";
 
-function Quotes() {
+function Quotes({ rawQuotes }) {
   const [configs, setConfigs] = useState({
     type: "add",
     id: 0,
@@ -30,12 +30,8 @@ function Quotes() {
     authorId: Math.random().toString(16).slice(2),
     error: false,
   });
-  const [quotes, setQuotes] = useState([]);
+  const [quotes, setQuotes] = useState(rawQuotes);
   useEffect(() => {
-    api.get("/quotes").then((res) => {
-      setQuotes(res.data);
-    });
-
     const id = localStorage.getItem("author_id");
     if (!id) {
       setConfigs({
@@ -217,7 +213,7 @@ function Quotes() {
           </div>
         </div>
         <DrawerFooter>
-          {configs.type !== "look" && (
+          {configs.type !== "look" && configs.type === "edit" && (
             <DrawerClose asChild>
               <Button
                 onClick={() => {

@@ -4,9 +4,29 @@ import { BookHeart, Clapperboard, Drama, Timer } from "lucide-react";
 
 import { Section, Quotes } from "@/components";
 
+import { prisma } from "@/lib/database";
 import Head from "next/head";
 
-function Home() {
+export const getServerSideProps = async () => {
+  const quotes = await prisma.quotes.findMany({
+    orderBy: [
+      {
+        date: "desc",
+      },
+    ],
+  });
+
+  const serialized = JSON.parse(JSON.stringify(quotes));
+
+  return {
+    props: {
+      rawQuotes: serialized,
+    },
+  };
+};
+
+/** @param {import('next').InferGetServerSidePropsType<typeof getServerSideProps> } props */
+function Home({ rawQuotes }) {
   const items = [
     {
       name: "Contador de coisas",
@@ -46,7 +66,7 @@ function Home() {
         {"Bem-vinda ao Cafofo Estelar!"}
       </div>
       <Section title="Frase do dia">
-        <Quotes />
+        <Quotes rawQuotes={rawQuotes} />
       </Section>
       <Section title="Apps">
         <div className="grid items-center grid-cols-2 gap-4 w-full">
