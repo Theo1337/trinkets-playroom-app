@@ -1,0 +1,2 @@
+-- AlterTable
+ALTER TABLE "Movies" ALTER COLUMN "date" SET DATA TYPE TIMESTAMP(0);
