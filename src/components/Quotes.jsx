@@ -117,7 +117,8 @@ function Quotes() {
                   onClick={() => {
                     setConfigs({
                       ...configs,
-                      type: "edit",
+                      type:
+                        quote.authorId !== configs.authorId ? "look" : "edit",
                       id: quote.id,
                       quote: quote.quote,
                       author: quote.author,
@@ -126,10 +127,10 @@ function Quotes() {
                   }}
                   className="flex flex-col items-center gap-3 p-4 bg-white rounded-md"
                 >
-                  <div className=" text-lg capitalize max-h-[150px] max-w-[300px] pr-4 overflow-y-auto break-words">
+                  <div className="text-center text-lg capitalize max-h-[150px] max-w-[300px] pr-4 overflow-y-auto break-words">
                     {quote.quote}
                   </div>
-                  <div className="text-xs font-bold text-neutral-500">
+                  <div className="text-xs font-bold max-w-[20ch] truncate text-neutral-500">
                     {quote.author}
                   </div>
                 </div>
@@ -173,13 +174,23 @@ function Quotes() {
 
       <DrawerContent className="bg-white flex flex-col gap-2">
         <DrawerHeader>
-          <DrawerTitle>Adicionar frase</DrawerTitle>
+          <DrawerTitle>
+            {configs.type === "look" ? (
+              <div className="flex items-center gap-1">
+                Frase de
+                <div className="max-w-[30ch] truncate">{configs.author}</div>
+              </div>
+            ) : (
+              "Adicionar frase"
+            )}
+          </DrawerTitle>
         </DrawerHeader>
         <div className="flex md:flex-col flex-col gap-2 p-4 pb-0">
           <div>
             <Textarea
               value={configs.quote}
               error={configs.error}
+              disabled={configs.type === "look"}
               onChange={(e) => {
                 setConfigs({
                   ...configs,
@@ -194,6 +205,7 @@ function Quotes() {
           <div>
             <Input
               value={configs.author}
+              disabled={configs.type === "look"}
               onChange={(e) => {
                 setConfigs({
                   ...configs,
@@ -205,7 +217,7 @@ function Quotes() {
           </div>
         </div>
         <DrawerFooter>
-          {configs.type === "edit" && (
+          {configs.type !== "look" && (
             <DrawerClose asChild>
               <Button
                 onClick={() => {
@@ -224,13 +236,27 @@ function Quotes() {
           )}
           {configs.quote ? (
             <DrawerClose asChild>
-              <Button variant="movie" onClick={saveQuote} className="w-full">
-                Salvar
+              <Button
+                variant="movie"
+                onClick={() => {
+                  if (configs.type === "look") return;
+                  saveQuote();
+                }}
+                className="w-full"
+              >
+                {configs.type === "look" ? "Fechar" : "Salvar"}
               </Button>
             </DrawerClose>
           ) : (
-            <Button variant="movie" onClick={saveQuote} className="w-full">
-              Salvar
+            <Button
+              variant="movie"
+              onClick={() => {
+                if (configs.type === "look") return;
+                saveQuote();
+              }}
+              className="w-full"
+            >
+              {configs.type === "look" ? "Fechar" : "Salvar"}
             </Button>
           )}
         </DrawerFooter>

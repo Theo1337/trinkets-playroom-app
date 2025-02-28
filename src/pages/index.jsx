@@ -37,9 +37,12 @@ function Home() {
       <Head>
         <title>Cafofo Estelar</title>
         <meta name="description" content="Bem-vindo ao Cafofo Estelar!" />
+        <link rel="icon" href="favicon.ico" type="image/ico" />
       </Head>
-      <div className="font-logo text-4xl text-neutral-600">Cafofo Estelar</div>
-      <div className="text-xs text-neutral-400 mt-2 uppercase">
+      <div className="font-logo text-4xl text-neutral-700 mt-1">
+        Cafofo Estelar
+      </div>
+      <div className="text-xs text-neutral-500 mt-2 uppercase">
         {"Bem-vinda ao Cafofo Estelar!"}
       </div>
       <Section title="Frase do dia">

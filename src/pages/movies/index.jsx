@@ -5,7 +5,7 @@ import React, { useState } from "react";
 import { api } from "@/utils";
 import { prisma } from "@/lib/database";
 
-import { format, setDefaultOptions } from "date-fns";
+import { format, set, setDefaultOptions } from "date-fns";
 
 import { Section } from "../../components";
 import { Button } from "@/components/ui/button";
@@ -25,6 +25,8 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+
+import { OrbitProgress } from "react-loading-indicators";
 
 import Layout from "@/components/layout/Layout";
 import GalleryDiv from "@/components/layout/GalleryDiv";
@@ -74,9 +76,13 @@ function Home({ rawMovies }) {
     error: false,
   });
 
+  const [loading, setLoading] = useState(false);
+
   setDefaultOptions({ locale: ptBR });
 
   const saveItem = async () => {
+    setLoading(true);
+
     if (configs.image) {
       if (configs.type === "edit") {
         api
@@ -92,13 +98,18 @@ function Home({ rawMovies }) {
             setMovies(
               movies.map((each) => (each.id === configs.id ? res.data : each))
             );
-            setConfigs({
-              name: "",
-              image: "",
-              watched: false,
-              date: new Date(),
-              dateWatched: new Date(),
-            });
+
+            setTimeout(() => {
+              setConfigs({
+                name: "",
+                image: "",
+                watched: false,
+                date: new Date(),
+                dateWatched: new Date(),
+              });
+
+              setLoading(false);
+            }, 1000);
           });
       } else {
         api
@@ -111,13 +122,18 @@ function Home({ rawMovies }) {
           })
           .then((res) => {
             setMovies([...movies, res.data]);
-            setConfigs({
-              name: "",
-              image: "",
-              watched: false,
-              date: new Date(),
-              dateWatched: new Date(),
-            });
+
+            setTimeout(() => {
+              setConfigs({
+                name: "",
+                image: "",
+                watched: false,
+                date: new Date(),
+                dateWatched: new Date(),
+              });
+
+              setLoading(false);
+            }, 1000);
           });
       }
     } else {
@@ -130,12 +146,16 @@ function Home({ rawMovies }) {
             .toLowerCase()}&year=${configs.year}`
         )
         .then((res) => {
-          setConfigs({
-            ...configs,
-            error: res.data.Response == "False" ? true : false,
-            image: res.data.Poster,
-            name: res.data.Title,
-          });
+          setTimeout(() => {
+            setConfigs({
+              ...configs,
+              error: res.data.Response == "False" ? true : false,
+              image: res.data.Poster,
+              name: res.data.Title,
+            });
+
+            setLoading(false);
+          }, 500);
         });
     }
   };
@@ -297,9 +317,15 @@ function Home({ rawMovies }) {
             )}
           </div>
           <DrawerFooter>
-            <Button onClick={saveItem} variant="movie" className="w-full">
-              {configs.image ? "Salvar" : "Pesquisar"}
-            </Button>
+            {loading ? (
+              <div className="flex items-center justify-center gap-2 w-full">
+                <OrbitProgress size="small" color="#0ea5e9" />
+              </div>
+            ) : (
+              <Button onClick={saveItem} variant="movie" className="w-full">
+                {configs.image ? "Salvar" : "Pesquisar"}
+              </Button>
+            )}
           </DrawerFooter>
         </DrawerContent>
         <Section title="Lista de filmes para assistir">
@@ -329,7 +355,7 @@ function Home({ rawMovies }) {
                             error: false,
                           });
                         }}
-                        className="transition max-w-[200px] h-[250px] relative cursor-pointer flex flex-col md:h-full overflow-hidden items-center pb-4 rounded-md bg-white hover:bg-pink-300 "
+                        className="transition max-w-[200px] h-[250px] relative cursor-pointer flex flex-col md:h-full overflow-hidden items-center pb-4 rounded-md bg-white hover:bg-neutral-200 "
                       >
                         {movie.image ? (
                           <img
@@ -338,7 +364,7 @@ function Home({ rawMovies }) {
                             className="w-[200px] h-[250px] rounded-t-md object-cover"
                           />
                         ) : (
-                          <div className="w-[200px] h-[1000px] flex-col gap-2 bg-pink-50 flex items-center justify-center rounded-t-md object-cover">
+                          <div className="w-[200px] h-[1000px] flex-col gap-2 bg-neutral-50 flex items-center justify-center rounded-t-md object-cover">
                             <ImageOff className="text-neutral-400 text-9xl" />
                             <div className="text-xs text-center text-neutral-500">
                               Imagem não encontrada
@@ -385,7 +411,7 @@ function Home({ rawMovies }) {
                             error: false,
                           });
                         }}
-                        className="transition w-[200px] relative cursor-pointer flex flex-col md:h-full overflow-hidden items-center pb-4 rounded-md bg-white hover:bg-pink-300 "
+                        className="transition w-[200px] relative cursor-pointer flex flex-col md:h-full overflow-hidden items-center pb-4 rounded-md bg-white hover:bg-neutral-200 "
                       >
                         {movie.image ? (
                           <img

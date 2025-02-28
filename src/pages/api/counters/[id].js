@@ -18,6 +18,8 @@ export default async function handler(req, res) {
       return res.status(400).json({ error: "Name not set" });
     }
 
+    console.log(body);
+
     const counters = await prisma.counters.update({
       where: {
         id: body.id,

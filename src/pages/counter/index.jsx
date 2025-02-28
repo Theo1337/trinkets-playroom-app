@@ -20,6 +20,8 @@ import {
   DrawerTrigger,
 } from "@/components/ui/drawer";
 
+import { OrbitProgress } from "react-loading-indicators";
+
 import { MoveLeft, Plus, Pencil, Trash2 } from "lucide-react";
 import { ptBR } from "date-fns/locale";
 
@@ -57,7 +59,10 @@ function Home({ rawCounters }) {
     lastUpdated: new Date(),
 
     error: false,
+    timeout: null,
   });
+
+  const [loading, setLoading] = useState(false);
 
   setDefaultOptions({ locale: ptBR });
 
@@ -72,40 +77,79 @@ function Home({ rawCounters }) {
       lastUpdated: new Date(),
       error: false,
     });
+
+    setLoading(false);
   };
 
   const changeCounter = async ({ type, counter }) => {
-    console.log(counter);
-    api
-      .put(`/counters/${counter.id}`, {
-        ...counter,
-        value: type === "add" ? counter.value + 1 : counter.value - 1,
-      })
-      .then((res) => {
-        console.log(res);
+    if (configs.timeout) clearTimeout(configs.timeout);
+    const timeToSave = setTimeout(() => {
+      console.log("Updating database");
 
+      api.put(`/counters/${counter.id}`, counter).then((res) => {
         const newCounters = counters.map((each) =>
-          each.id === counter.id ? res.data : each
+          each.id === counter.id
+            ? {
+                ...res.data,
+                value: type === "add" ? res.data.value + 1 : res.data.value - 1,
+              }
+            : each
         );
 
         setCounters(newCounters);
       });
+    }, 1000);
+
+    setConfigs({
+      ...configs,
+      timeout: timeToSave,
+    });
   };
 
   const saveItem = () => {
+    setLoading(true);
+
     if (configs.name) {
-      api
-        .post("/counters", {
-          name: configs.name,
-          value: configs.value,
-          date: new Date(configs.date),
-          daily: configs.daily,
-          lastUpdated: new Date(configs.lastUpdated),
-        })
-        .then((res) => {
-          setCounters([...counters, res.data]);
-          resetState();
-        });
+      if (configs.type === "edit") {
+        console.log(configs);
+        api
+          .put(`/counters/${configs.id}`, {
+            id: configs.id,
+            name: configs.name,
+            value: configs.value,
+            date: new Date(configs.date),
+            daily: configs.daily,
+            lastUpdated: new Date(configs.lastUpdated),
+          })
+          .then((res) => {
+            setCounters(
+              counters.map((each) => (each.id === configs.id ? res.data : each))
+            );
+
+            setTimeout(() => {
+              resetState();
+
+              setLoading(false);
+            }, 1000);
+          });
+      } else {
+        api
+          .post("/counters", {
+            name: configs.name,
+            value: configs.value,
+            date: new Date(configs.date),
+            daily: configs.daily,
+            lastUpdated: new Date(configs.lastUpdated),
+          })
+          .then((res) => {
+            setTimeout(() => {
+              setCounters([...counters, res.data]);
+              resetState();
+
+              setLoading(false);
+            }, 1000);
+          });
+      }
     } else {
       setConfigs({
         ...configs,
@@ -135,7 +179,7 @@ function Home({ rawCounters }) {
           Contadores
         </div>
         <div className="text-xs text-neutral-500 mt-2 uppercase">
-          {"Lista de contadores inúteis!"}
+          {"Contadores inúteis para coisas inúteis!"}
         </div>
 
         <DrawerContent className="bg-white flex flex-col gap-2">
@@ -184,24 +228,32 @@ function Home({ rawCounters }) {
           </div>
           <DrawerFooter>
             {configs.type === "edit" && (
-              <Button
-                onClick={() => {
-                  api.delete(`/counters/${configs.id}`).then((res) => {
-                    setCounters(
-                      counters.filter((each) => each.id !== res.data.id)
-                    );
-                    resetState();
-                  });
-                }}
-                variant="destructive"
-                className="w-full"
-              >
-                <Trash2 /> Excluir
+              <DrawerClose asChild>
+                <Button
+                  onClick={() => {
+                    api.delete(`/counters/${configs.id}`).then((res) => {
+                      setCounters(
+                        counters.filter((each) => each.id !== res.data.id)
+                      );
+                      resetState();
+                    });
+                  }}
+                  variant="destructive"
+                  className="w-full"
+                >
+                  <Trash2 /> Excluir
+                </Button>
+              </DrawerClose>
+            )}
+            {loading ? (
+              <div className="flex items-center justify-center gap-2 w-full">
+                <OrbitProgress size="small" color="#0ea5e9" />
+              </div>
+            ) : (
+              <Button onClick={saveItem} variant="movie" className="w-full">
+                Salvar
               </Button>
             )}
-            <Button onClick={saveItem} variant="movie" className="w-full">
-              Salvar
-            </Button>
           </DrawerFooter>
         </DrawerContent>
 
@@ -249,6 +301,12 @@ function Home({ rawCounters }) {
                 <div className="flex items-center justify-center gap-4 w-full px-4 pt-4">
                   <Button
                     onClick={() => {
+                      const newCounters = counters.map((each) =>
+                        each.id === counter.id
+                          ? { ...each, value: each.value - 1 }
+                          : each
+                      );
+                      setCounters(newCounters);
                       changeCounter({ type: "remove", counter: counter });
                     }}
                     variant="outline"
@@ -258,6 +316,12 @@ function Home({ rawCounters }) {
                   </Button>
                   <Button
                     onClick={() => {
+                      const newCounters = counters.map((each) =>
+                        each.id === counter.id
+                          ? { ...each, value: each.value + 1 }
+                          : each
+                      );
+                      setCounters(newCounters);
                       changeCounter({ type: "add", counter: counter });
                     }}
                     variant="outline"
