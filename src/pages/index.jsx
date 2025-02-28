@@ -4,6 +4,8 @@ import { BookHeart, Clapperboard, Drama, Timer } from "lucide-react";
 
 import { Section, Quotes } from "@/components";
 
+import Head from "next/head";
+
 function Home() {
   const items = [
     {
@@ -32,6 +34,10 @@ function Home() {
 
   return (
     <div className="flex flex-col items-center md:h-screen p-8 bg-[#f3eae3] min-h-screen text-black ">
+      <Head>
+        <title>Cafofo Estelar</title>
+        <meta name="description" content="Bem-vindo ao Cafofo Estelar!" />
+      </Head>
       <div className="font-logo text-4xl text-neutral-600">Cafofo Estelar</div>
       <div className="text-xs text-neutral-400 mt-2 uppercase">
         {"Bem-vinda ao Cafofo Estelar!"}

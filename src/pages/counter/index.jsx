@@ -23,6 +23,8 @@ import {
 import { MoveLeft, Plus, Pencil, Trash2 } from "lucide-react";
 import { ptBR } from "date-fns/locale";
 
+import Head from "next/head";
+
 export const getServerSideProps = async () => {
   const counters = await prisma.counters.findMany({
     orderBy: [
@@ -114,6 +116,9 @@ function Home({ rawCounters }) {
 
   return (
     <Drawer onClose={resetState} className="w-full">
+      <Head>
+        <title>Cafofo Estelar - Contadores</title>
+      </Head>
       <div
         onClick={() => {
           window.location.href = "/";

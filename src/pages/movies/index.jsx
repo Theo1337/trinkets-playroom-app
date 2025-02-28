@@ -40,6 +40,8 @@ import {
 } from "lucide-react";
 import { ptBR } from "date-fns/locale";
 
+import Head from "next/head";
+
 export const getServerSideProps = async () => {
   const movies = await prisma.movies.findMany({
     orderBy: [
@@ -151,6 +153,9 @@ function Home({ rawMovies }) {
       }}
       className="w-full"
     >
+      <Head>
+        <title>Cafofo Estelar - Lista de filmes</title>
+      </Head>
       <div
         onClick={() => {
           window.location.href = "/";
