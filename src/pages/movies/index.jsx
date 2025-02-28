@@ -431,7 +431,7 @@ function Home({ rawMovies }) {
                           {movie.name}
                         </div>
                         <div className="text-xs text-neutral-500 flex items-center justify-center text-center px-4 w-full">
-                          {format(movie.date, "PPP")}
+                          {format(movie.dateWatched, "PPP")}
                         </div>
                       </div>
                     </DrawerTrigger>
