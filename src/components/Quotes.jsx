@@ -123,7 +123,7 @@ function Quotes({ rawQuotes }) {
                   }}
                   className="flex flex-col items-center gap-3 p-4 bg-white rounded-md"
                 >
-                  <div className="text-center text-lg capitalize max-h-[150px] max-w-[300px] pr-4 overflow-y-auto break-words">
+                  <div className="text-center text-lg max-h-[150px] max-w-[300px] pr-4 overflow-y-auto break-words">
                     {quote.quote}
                   </div>
                   <div className="text-xs font-bold max-w-[20ch] truncate text-neutral-500">

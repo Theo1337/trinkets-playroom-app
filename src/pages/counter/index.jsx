@@ -86,18 +86,23 @@ function Home({ rawCounters }) {
     const timeToSave = setTimeout(() => {
       console.log("Updating database");
 
-      api.put(`/counters/${counter.id}`, counter).then((res) => {
-        const newCounters = counters.map((each) =>
-          each.id === counter.id
-            ? {
-                ...res.data,
-                value: type === "add" ? res.data.value + 1 : res.data.value - 1,
-              }
-            : each
-        );
+      api
+        .put(`/counters/${counter.id}`, {
+          ...counter,
+          value: type === "add" ? counter.value + 1 : counter.value - 1,
+        })
+        .then((res) => {
+          const newCounters = counters.map((each) =>
+            each.id === counter.id
+              ? {
+                  ...res.data,
+                  value: res.data.value,
+                }
+              : each
+          );
 
-        setCounters(newCounters);
-      });
+          setCounters(newCounters);
+        });
     }, 1000);
 
     setConfigs({
