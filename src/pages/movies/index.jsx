@@ -74,11 +74,28 @@ function Home({ rawMovies }) {
     date: new Date(),
     dateWatched: new Date(),
     error: false,
+    timeout: null,
   });
+
+  const [movieSearch, setMovieSearch] = useState([]);
 
   const [loading, setLoading] = useState(false);
 
   setDefaultOptions({ locale: ptBR });
+
+  const resetState = () => {
+    setMovieSearch([]);
+    setConfigs({
+      name: "",
+      image: "",
+      watched: false,
+      date: new Date(),
+      dateWatched: new Date(),
+      error: false,
+      timeout: null,
+    });
+    setLoading(false);
+  };
 
   const saveItem = async () => {
     setLoading(true);
@@ -100,15 +117,7 @@ function Home({ rawMovies }) {
             );
 
             setTimeout(() => {
-              setConfigs({
-                name: "",
-                image: "",
-                watched: false,
-                date: new Date(),
-                dateWatched: new Date(),
-              });
-
-              setLoading(false);
+              resetState();
             }, 1000);
           });
       } else {
@@ -121,58 +130,30 @@ function Home({ rawMovies }) {
             dateWatched: new Date(configs.dateWatched),
           })
           .then((res) => {
-            setMovies([...movies, res.data]);
+            setMovies([res.data, ...movies]);
 
             setTimeout(() => {
-              setConfigs({
-                name: "",
-                image: "",
-                watched: false,
-                date: new Date(),
-                dateWatched: new Date(),
-              });
-
-              setLoading(false);
+              resetState();
             }, 1000);
           });
       }
-    } else {
-      if (configs.name == "" || configs.name == undefined) return;
-
-      api
-        .get(
-          `/movie/search?name=${configs.name
-            .replace(/\((\d{4})\)/, "")
-            .toLowerCase()}&year=${configs.year}`
-        )
-        .then((res) => {
-          setTimeout(() => {
-            setConfigs({
-              ...configs,
-              error: res.data.Response == "False" ? true : false,
-              image: res.data.Poster,
-              name: res.data.Title,
-            });
-
-            setLoading(false);
-          }, 500);
-        });
     }
   };
 
+  const searchMovie = ({ name, year }) => {
+    api
+      .get(
+        `/movie/search?name=${name
+          .replace(/\((\d{4})\)/, "")
+          .toLowerCase()}&year=${year}`
+      )
+      .then((res) => {
+        setMovieSearch(res.data);
+      });
+  };
+
   return (
-    <Drawer
-      onClose={() => {
-        setConfigs({
-          name: "",
-          image: "",
-          watched: false,
-          date: new Date(),
-          dateWatched: new Date(),
-        });
-      }}
-      className="w-full"
-    >
+    <Drawer onClose={resetState} className="w-full">
       <Head>
         <title>Cafofo Estelar - Lista de filmes</title>
       </Head>
@@ -210,26 +191,96 @@ function Home({ rawMovies }) {
           </DrawerHeader>
           <div className="flex md:flex-col flex-col gap-2 p-4 pb-0">
             <div className="flex gap-2 items-center justify-start flex-grow w-full">
-              <div className="w-full">
+              <div className="w-full relative -top">
+                {movieSearch.length > 0 && (
+                  <div className="w-full absolute bottom-10 max-h-[600px] overflow-y-auto bg-neutral-50 rounded b-0 border rounded-b-none border-b-0 border-input m-0">
+                    <div>
+                      {movieSearch.map((movie, i) => (
+                        <div
+                          key={i}
+                          className="flex even:bg-neutral-200 items-center justify-center gap-2 w-full bg-neutral-50 p-4 pr-4 text-xs text-neutral-400 hover:bg-neutral-100 cursor-pointer"
+                          onClick={() => {
+                            setConfigs({
+                              ...configs,
+                              name: movie.title,
+                              image: `https://image.tmdb.org/t/p/w500${movie.poster_path}`,
+                              year: movie.release_date,
+                            });
+
+                            setMovieSearch([]);
+                          }}
+                        >
+                          <div className="flex gap-4 items-center justify-center">
+                            <div className="w-full grid place-items-center">
+                              {movie.poster_path ? (
+                                <img
+                                  src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`}
+                                  alt={movie.title}
+                                  className="w-full h-full rounded-md object-cover"
+                                />
+                              ) : (
+                                <div className="w-auto h-[200px] flex-col gap-2 bg-neutral-50 flex items-center justify-center rounded-md object-cover">
+                                  <ImageOff className="text-neutral-400 text-9xl" />
+                                  <div className="text-xs text-center text-neutral-500">
+                                    Imagem não encontrada
+                                  </div>
+                                </div>
+                              )}
+                            </div>
+                            <div className="w-full grid place-items-center   text-black font-bold text-center">
+                              <div>{movie.title}</div>
+                              <div>
+                                {movie.release_date ? (
+                                  <div className="text-xs text-neutral-500">
+                                    {format(
+                                      new Date(movie.release_date),
+                                      "PPP"
+                                    )}
+                                  </div>
+                                ) : (
+                                  <div className="text-xs text-neutral-500">
+                                    Data não encontrada
+                                  </div>
+                                )}
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
                 <Input
                   placeholder="Filme"
                   value={configs.name}
-                  error={configs.error}
-                  errorMessage={configs.watched ? "" : "Filme não encontrado"}
                   onKeyDown={(e) => {
                     if (e.key === "Enter") {
                       saveItem();
                     }
                   }}
+                  className={`${
+                    configs.name.length > 0 &&
+                    movieSearch.length > 0 &&
+                    "rounded-t-none border-t-0"
+                  }`}
                   onChange={(e) => {
+                    if (configs.timeout) clearTimeout(configs.timeout);
+
                     const name = e.target.value;
                     const yearMatch = name.match(/\((\d{4})\)/);
+
+                    const timeout = setTimeout(() => {
+                      searchMovie({
+                        name: e.target.value,
+                        year: yearMatch ? yearMatch[1] : undefined,
+                      });
+                    }, 500);
 
                     setConfigs({
                       ...configs,
                       name: e.target.value,
-                      image: "",
                       year: yearMatch ? yearMatch[1] : undefined,
+                      timeout: timeout,
                     });
                   }}
                 />
@@ -272,32 +323,6 @@ function Home({ rawMovies }) {
                 </PopoverContent>
               </Popover>
             )}
-            {configs.image ? (
-              <div className="flex-col left-0  -top-[350px] absolute text-white bg-black/50 h-full w-full flex items-center justify-center ">
-                <img
-                  src={configs.image}
-                  alt="Imagem do filme"
-                  className="w-[200px] h-auto rounded-lg"
-                />
-
-                <div className="uppercase flex items-start justify-center gap-2 text-lg text-center mt-2 ">
-                  <div
-                    className={`font-bold ${
-                      configs.type === "edit" ? "max-w-screen" : "max-w-[15ch]"
-                    } truncate`}
-                  >
-                    {configs.name}
-                  </div>
-                  {configs.type !== "edit" && "é o filme correto?"}
-                </div>
-              </div>
-            ) : (
-              <div className="w-full flex-grow h-auto text-xs">
-                {!configs.error &&
-                  !configs.watched &&
-                  "Pesquise o nome do filme no campo acima"}
-              </div>
-            )}
             {configs.type === "edit" && (
               <DrawerClose asChild>
                 <Button
@@ -323,7 +348,7 @@ function Home({ rawMovies }) {
               </div>
             ) : (
               <Button onClick={saveItem} variant="movie" className="w-full">
-                {configs.image ? "Salvar" : "Pesquisar"}
+                Salvar
               </Button>
             )}
           </DrawerFooter>
@@ -371,7 +396,7 @@ function Home({ rawMovies }) {
                             </div>
                           </div>
                         )}
-                        <div className="font-bold p-4 text-center truncate">
+                        <div className="font-bold p-4 text-center max-w-[150px] truncate">
                           {movie.name}
                         </div>
                         <div className="text-xs text-neutral-500 flex items-center justify-center text-center px-4 w-full">
