@@ -99,9 +99,9 @@ function Home({ rawMovies }) {
   };
 
   const saveItem = async () => {
-    setLoading(true);
-
     if (configs.image) {
+      setLoading(true);
+
       if (configs.type === "edit") {
         api
           .put(`/movie/${configs.id}`, {
@@ -198,7 +198,7 @@ function Home({ rawMovies }) {
           </DrawerHeader>
           <div className="flex md:flex-col flex-col gap-2 p-4 pb-0">
             <div className="flex gap-2 items-center justify-start flex-grow w-full">
-              <div className="w-full relative -top">
+              <div className="w-full relative">
                 {movieSearch.length > 0 && (
                   <div className="w-full absolute bottom-10 max-h-[600px] overflow-y-auto bg-neutral-50 rounded b-0 border rounded-b-none border-b-0 border-input m-0">
                     <div>
@@ -331,6 +331,32 @@ function Home({ rawMovies }) {
                 </PopoverContent>
               </Popover>
             )}
+            {configs.image && movieSearch.length <= 0 ? (
+              <div className="flex-col left-0  -top-[350px] absolute text-white bg-black/50 h-full w-full flex items-center justify-center ">
+                <img
+                  src={configs.image}
+                  alt="Imagem do filme"
+                  className="w-[200px] h-auto rounded-lg"
+                />
+
+                <div className="uppercase flex items-start justify-center gap-2 text-lg text-center mt-2 ">
+                  <div
+                    className={`font-bold ${
+                      configs.type === "edit" ? "max-w-screen" : "max-w-[15ch]"
+                    } truncate`}
+                  >
+                    {configs.name}
+                  </div>
+                  {configs.type !== "edit" && "é o filme correto?"}
+                </div>
+              </div>
+            ) : (
+              <div className="w-full flex-grow h-auto text-xs">
+                {!configs.error &&
+                  !configs.watched &&
+                  "Pesquise o nome do filme no campo acima"}
+              </div>
+            )}
             {configs.type === "edit" && (
               <DrawerClose asChild>
                 <Button
@@ -355,7 +381,12 @@ function Home({ rawMovies }) {
                 <OrbitProgress size="small" color="#0ea5e9" />
               </div>
             ) : (
-              <Button onClick={saveItem} variant="movie" className="w-full">
+              <Button
+                onClick={saveItem}
+                disabled={!configs.name}
+                variant="movie"
+                className="w-full"
+              >
                 Salvar
               </Button>
             )}
