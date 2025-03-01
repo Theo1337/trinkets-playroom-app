@@ -93,6 +93,7 @@ function Home({ rawMovies }) {
       dateWatched: new Date(),
       error: false,
       timeout: null,
+      keyboardTimeout: null,
     });
     setLoading(false);
   };
@@ -149,6 +150,12 @@ function Home({ rawMovies }) {
       )
       .then((res) => {
         setMovieSearch(res.data);
+
+        if (res.data.length > 0) {
+          setTimeout(() => {
+            document.getElementById("search-input").blur();
+          }, 1500);
+        }
       });
   };
 
@@ -253,6 +260,7 @@ function Home({ rawMovies }) {
                 <Input
                   placeholder="Filme"
                   value={configs.name}
+                  id="search-input"
                   onKeyDown={(e) => {
                     if (e.key === "Enter") {
                       saveItem();
