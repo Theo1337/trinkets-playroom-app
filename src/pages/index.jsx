@@ -8,7 +8,32 @@ import { prisma } from "@/lib/database";
 import Head from "next/head";
 
 export const getServerSideProps = async () => {
+  const startOfDay = new Date(
+    new Date().getFullYear(),
+    new Date().getMonth(),
+    new Date().getDate()
+  );
+  const endOfDay = new Date(
+    new Date().getFullYear(),
+    new Date().getMonth(),
+    new Date().getDate() + 1
+  );
+
   const quotes = await prisma.quotes.findMany({
+    where: {
+      AND: [
+        {
+          date: {
+            gte: startOfDay, // Convert to timestamp (milliseconds)
+          },
+        },
+        {
+          date: {
+            lt: endOfDay, // Convert to timestamp (milliseconds)
+          },
+        },
+      ],
+    },
     orderBy: [
       {
         date: "desc",
