@@ -70,7 +70,7 @@ function Quotes({ rawQuotes }) {
             quote: configs.quote,
             author: configs.author,
             authorId: configs.authorId,
-            date: new Date(configs.date),
+            date: new Date(),
           })
           .then((res) => {
             setQuotes(
