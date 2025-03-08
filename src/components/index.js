@@ -1,4 +1,5 @@
 import Section from "./Section";
 import Quotes from "./Quotes";
+import Timeline from "./Timeline";
 
-export { Section, Quotes };
+export { Section, Quotes, Timeline };

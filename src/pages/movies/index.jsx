@@ -1,11 +1,9 @@
-// IMPORTANT TO DO: ADD SKELETON TO MAKE LOADING ANIMATION
-
 import React, { useState } from "react";
 
 import { api } from "@/utils";
 import { prisma } from "@/lib/database";
 
-import { format, set, setDefaultOptions } from "date-fns";
+import { format, setDefaultOptions } from "date-fns";
 
 import { Section } from "../../components";
 import { Button } from "@/components/ui/button";

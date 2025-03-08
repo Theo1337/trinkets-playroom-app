@@ -23,6 +23,7 @@
     "react-day-picker": "^8.10.1",
     "react-dom": "^18.2.0",
     "react-horizontal-scrolling-menu": "^7.1.1",
+    "react-horizontal-timeline": "^1.5.3",
     "react-loading-indicators": "^1.0.0",
     "react-parallax-tilt": "^1.7.284",
     "tailwind-merge": "^3.0.1",

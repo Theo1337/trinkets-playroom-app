@@ -121,13 +121,19 @@ function Quotes({ rawQuotes }) {
                       date: quote.date,
                     });
                   }}
-                  className="flex flex-col items-center gap-3 p-4 bg-white rounded-md"
+                  className="flex flex-col cursor-pointer items-center gap-3 p-4 bg-white rounded-md"
                 >
-                  <div className="text-center text-lg max-h-[150px] max-w-[300px] pr-4 overflow-y-auto break-words">
+                  <div className="text-center  text-lg max-h-[150px] max-w-[300px] pr-4 overflow-y-auto break-words">
                     {quote.quote}
                   </div>
-                  <div className="text-xs font-bold max-w-[20ch] truncate text-neutral-500">
-                    {quote.author}
+                  <div className="flex gap-2 items-center justify-center w-full">
+                    <div className="text-sm text-right   w-full font-bold max-w-[20ch] truncate text-neutral-500">
+                      {quote.author}
+                    </div>
+                    -
+                    <div className="flex flex-col gap-2 items-start justify-center text-sm text-neutral-400 font-bold w-full">
+                      <div>{format(quote.date, "HH:mm")}</div>
+                    </div>
                   </div>
                 </div>
               </DrawerTrigger>

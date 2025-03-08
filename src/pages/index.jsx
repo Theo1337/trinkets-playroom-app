@@ -1,6 +1,12 @@
 import React from "react";
 
-import { BookHeart, Clapperboard, Drama, Timer } from "lucide-react";
+import {
+  BookHeart,
+  Clapperboard,
+  Drama,
+  Timer,
+  ChartGantt,
+} from "lucide-react";
 
 import { Section, Quotes } from "@/components";
 
@@ -64,6 +70,12 @@ function Home({ rawQuotes }) {
       icon: <Clapperboard className="group-hover:text-gray-500 transition" />,
       maintence: false,
       url: "/movies",
+    },
+    {
+      name: "Timeline",
+      icon: <ChartGantt className="group-hover:text-emerald-500 transition" />,
+      maintence: false,
+      url: "/timeline",
     },
     {
       name: "Diário",
