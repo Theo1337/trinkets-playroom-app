@@ -69,6 +69,8 @@ function Home({ rawEvents }) {
       date: new Date(),
       title: "",
       text: "",
+      id: 0,
+      open: false,
     });
   };
 
@@ -131,7 +133,15 @@ function Home({ rawEvents }) {
         <div className="fixed z-50 bottom-4 right-4">
           <DrawerTrigger asChild>
             <div className="flex -mt-6 flex-col gap-2 rounded-full items-end w-full">
-              <div className="rounded-full flex items-center justify-center text-white bg-green-500 p-4">
+              <div
+                onClick={() => {
+                  setConfigs({
+                    ...configs,
+                    open: true,
+                  });
+                }}
+                className="rounded-full flex items-center justify-center text-white bg-green-500 p-4"
+              >
                 <Plus />
               </div>
             </div>
