@@ -116,7 +116,6 @@ function Home({ rawCounters }) {
 
     if (configs.name) {
       if (configs.type === "edit") {
-        console.log(configs);
         api
           .put(`/counters/${configs.id}`, {
             id: configs.id,
@@ -299,7 +298,7 @@ function Home({ rawCounters }) {
                   </div>
                 </DrawerTrigger>
 
-                <div className="font-bold p-4 text-center text-sm max-w-[300px] truncate">
+                <div className="font-bold p-4 text-center text-sm max-w-screen truncate">
                   {counter.name}
                 </div>
                 <div className="font-bold text-4xl">{counter.value}</div>

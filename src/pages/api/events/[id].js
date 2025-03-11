@@ -14,8 +14,8 @@ export default async function handler(req, res) {
   } else if (req.method === "PUT") {
     const { body } = req;
 
-    if (!body.name) {
-      return res.status(400).json({ error: "Name not set" });
+    if (!body.id) {
+      return res.status(400).json({ error: "ID not set" });
     }
 
     const events = await prisma.events.update({

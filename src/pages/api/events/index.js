@@ -8,7 +8,6 @@ export default async function handler(req, res) {
       return res.status(400).json({ error: "Date not set" });
     }
 
-    console.log(body);
     const events = await prisma.events.create({
       data: body,
     });

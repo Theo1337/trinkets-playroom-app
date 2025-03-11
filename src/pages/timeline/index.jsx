@@ -3,8 +3,8 @@ import React, { useState } from "react";
 import { api } from "@/utils";
 import { prisma } from "@/lib/database";
 
-import { format, setDefaultOptions } from "date-fns";
-import { ptBR } from "date-fns/locale";
+import { format, setDefaultOptions, addDays } from "date-fns";
+import { id, ptBR } from "date-fns/locale";
 
 import { Section, Timeline } from "@/components";
 import { Button } from "@/components/ui/button";
@@ -58,6 +58,8 @@ function Home({ rawEvents }) {
     type: "add",
     title: "",
     text: "",
+    id: 0,
+    open: false,
   });
 
   const [items, setItems] = useState(rawEvents);
@@ -72,22 +74,40 @@ function Home({ rawEvents }) {
 
   const saveData = async () => {
     if (configs.text && configs.title) {
-      api
-        .post("/events", {
-          title: configs.title,
-          text: configs.text,
-          date: format(configs.date, "yyyy-MM-dd"),
-          formattedDate: format(configs.date, "PPP"),
-          createdAt: new Date(),
-        })
-        .then(() => {
-          window.location.reload();
-        });
+      const date = new Date(configs.date);
+      const adjustedDate = addDays(date, 1);
+
+      if (configs.type == "edit") {
+        api
+          .put(`/events/${configs.id}`, {
+            title: configs.title,
+            text: configs.text,
+            date: date,
+            formattedDate: adjustedDate,
+            createdAt: new Date(),
+            id: configs.id,
+          })
+          .then(() => {
+            window.location.reload();
+          });
+      } else {
+        api
+          .post("/events", {
+            title: configs.title,
+            text: configs.text,
+            date: date,
+            formattedDate: adjustedDate,
+            createdAt: new Date(),
+          })
+          .then(() => {
+            window.location.reload();
+          });
+      }
     }
   };
 
   return (
-    <Drawer onClose={resetState} className="w-full">
+    <Drawer onClose={resetState} open={configs.open} className="w-full">
       <Head>
         <title>Cafofo Estelar - Timeline</title>
       </Head>
@@ -167,6 +187,15 @@ function Home({ rawEvents }) {
             </div>
           </div>
           <DrawerFooter>
+            <Button
+              onClick={() => {
+                api.delete(`/events/${configs.id}`);
+                window.location.reload();
+              }}
+              variant="destructive"
+            >
+              Excluir
+            </Button>
             <DrawerClose asChild>
               <Button onClick={saveData} variant="movie">
                 SALVAR
@@ -178,7 +207,22 @@ function Home({ rawEvents }) {
         <Section title="Linhas do tempo">
           {items.length > 0 ? (
             <div className="w-full">
-              <Timeline items={items} />
+              <Timeline
+                onSelectItem={(e) => {
+                  console.log("Editing item");
+                  setConfigs({
+                    ...configs,
+                    type: "edit",
+                    date: e.sortDate,
+                    formattedDate: e.title,
+                    title: e.cardTitle,
+                    text: e.cardSubtitle,
+                    id: e.id,
+                    open: true,
+                  });
+                }}
+                items={items}
+              />
             </div>
           ) : (
             <div className="w-full">

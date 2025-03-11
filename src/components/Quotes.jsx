@@ -123,15 +123,15 @@ function Quotes({ rawQuotes }) {
                   }}
                   className="flex flex-col cursor-pointer items-center gap-3 p-4 bg-white rounded-md"
                 >
-                  <div className="text-center  text-lg max-h-[150px] max-w-[300px] pr-4 overflow-y-auto break-words">
+                  <div className="text-center  text-lg max-h-[125px] max-w-[300px] pr-4 overflow-y-auto break-words">
                     {quote.quote}
                   </div>
                   <div className="flex gap-2 items-center justify-center w-full">
-                    <div className="text-sm text-right   w-full font-bold max-w-[20ch] truncate text-neutral-500">
+                    <div className="text-sm max-w-[20ch] w-min font-bold truncate text-neutral-500">
                       {quote.author}
                     </div>
                     -
-                    <div className="flex flex-col gap-2 items-start justify-center text-sm text-neutral-400 font-bold w-full">
+                    <div className="flex flex-col gap-2 w-min items-start justify-center text-sm text-neutral-400 font-bold">
                       <div>{format(quote.date, "HH:mm")}</div>
                     </div>
                   </div>
