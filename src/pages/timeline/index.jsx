@@ -197,15 +197,17 @@ function Home({ rawEvents }) {
             </div>
           </div>
           <DrawerFooter>
-            <Button
-              onClick={() => {
-                api.delete(`/events/${configs.id}`);
-                window.location.reload();
-              }}
-              variant="destructive"
-            >
-              Excluir
-            </Button>
+            {configs.edit && (
+              <Button
+                onClick={() => {
+                  api.delete(`/events/${configs.id}`);
+                  window.location.reload();
+                }}
+                variant="destructive"
+              >
+                Excluir
+              </Button>
+            )}
             <DrawerClose asChild>
               <Button onClick={saveData} variant="movie">
                 SALVAR
