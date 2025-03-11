@@ -6,6 +6,7 @@ import {
   Drama,
   Timer,
   ChartGantt,
+  CircleCheckBig,
 } from "lucide-react";
 
 import { Section, Quotes } from "@/components";
@@ -75,6 +76,14 @@ function Home({ rawQuotes }) {
       name: "Timeline",
       icon: <ChartGantt className="group-hover:text-emerald-500 transition" />,
       maintence: false,
+      url: "/timeline",
+    },
+    {
+      name: "Checklist",
+      icon: (
+        <CircleCheckBig className="group-hover:text-purple-500 transition" />
+      ),
+      maintence: true,
       url: "/timeline",
     },
     {

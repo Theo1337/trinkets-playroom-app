@@ -197,7 +197,7 @@ function Home({ rawEvents }) {
             </div>
           </div>
           <DrawerFooter>
-            {configs.edit && (
+            {configs.type === "edit" && (
               <Button
                 onClick={() => {
                   api.delete(`/events/${configs.id}`);
@@ -216,7 +216,7 @@ function Home({ rawEvents }) {
           </DrawerFooter>
         </DrawerContent>
 
-        <Section title="Linhas do tempo">
+        <Section title="Linha do tempo">
           {items.length > 0 ? (
             <div className="w-full">
               <Timeline
