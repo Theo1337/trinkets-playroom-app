@@ -1,15 +1,21 @@
-import { Html, Head, Main, NextScript } from "next/document";
+import Document, { Html, Head, Main, NextScript } from "next/document";
 
-export default function Document() {
-  return (
-    <Html lang="en">
-      <Head>
-        <link rel="shortcut icon" href="/favicon.ico" type="image/png" />
-      </Head>
-      <body className="antialiased">
-        <Main />
-        <NextScript />
-      </body>
-    </Html>
-  );
+class MyDocument extends Document {
+  render() {
+    return (
+      <Html>
+        <Head>
+          <link rel="manifest" href="app/manifest.json" />
+          {/* <link rel="apple-touch-icon" href="/icons/icon-192x192.png" /> */}
+          <meta name="theme-color" content="#f3eae3" />
+        </Head>
+        <body>
+          <Main />
+          <NextScript />
+        </body>
+      </Html>
+    );
+  }
 }
+
+export default MyDocument;
