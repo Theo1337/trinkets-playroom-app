@@ -13,7 +13,10 @@ export default function GalleryDiv({
 }: GalleryDivProps) {
   return (
     <div className="gallery" data-direction={direction}>
-      <div className="floating_content" data-images={galleryItemsAspectRatio}>
+      <div
+        className="floating_content md:movies_scroll md:overflow-x-scroll md:pb-2"
+        data-images={galleryItemsAspectRatio}
+      >
         {children}
       </div>
     </div>

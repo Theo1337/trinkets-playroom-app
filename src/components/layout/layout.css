@@ -104,3 +104,18 @@
     (100vw - var(--content-max-width)) / 2 - var(--space)
   );
 }
+
+.movies_scroll::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+  background-color: transparent;
+}
+.movies_scroll::-webkit-scrollbar-thumb {
+  border-radius: 100vw;
+  background: #383838;
+  background-clip: padding-box;
+}
+.movies_scroll::-webkit-scrollbar-thumb:hover {
+  border-radius: 100vw;
+  background: #585858;
+}
