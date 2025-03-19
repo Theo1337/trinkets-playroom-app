@@ -337,10 +337,10 @@ function Home({ rawMovies }) {
                   className="w-[200px] h-auto rounded-lg"
                 />
 
-                <div className="uppercase flex items-start justify-center gap-2 text-lg text-center mt-2 ">
+                <div className="uppercase flex items-start justify-center text-lg text-center mt-2 ">
                   <div
                     className={`font-bold ${
-                      configs.type === "edit" ? "max-w-screen" : "max-w-[15ch]"
+                      configs.type === "edit" ? "max-w-[85%]" : "max-w-[15ch]"
                     } truncate`}
                   >
                     {configs.name}
@@ -401,9 +401,8 @@ function Home({ rawMovies }) {
                 {movies
                   .filter((each) => each.watched === false)
                   .map((movie, i) => (
-                    <DrawerTrigger asChild>
+                    <DrawerTrigger key={i} asChild>
                       <div
-                        key={i}
                         onClick={() => {
                           setConfigs({
                             type: "edit",
@@ -433,7 +432,7 @@ function Home({ rawMovies }) {
                             </div>
                           </div>
                         )}
-                        <div className="font-bold p-4 text-center max-w-[150px] truncate">
+                        <div className="font-bold p-4 text-center max-w-[200px] truncate">
                           {movie.name}
                         </div>
                         <div className="text-xs text-neutral-500 flex items-center justify-center text-center px-4 w-full">
@@ -457,7 +456,7 @@ function Home({ rawMovies }) {
                 {movies
                   .filter((each) => each.watched === true)
                   .map((movie, i) => (
-                    <DrawerTrigger asChild>
+                    <DrawerTrigger key={i} asChild>
                       <div
                         key={i}
                         onClick={() => {
@@ -489,7 +488,7 @@ function Home({ rawMovies }) {
                             </div>
                           </div>
                         )}
-                        <div className="font-bold p-4 text-center max-w-[150px] truncate">
+                        <div className="font-bold p-4 text-center max-w-[200px] truncate">
                           {movie.name}
                         </div>
                         <div className="text-xs text-neutral-500 flex items-center justify-center text-center px-4 w-full">

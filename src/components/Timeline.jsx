@@ -1,6 +1,5 @@
 import React, { useEffect, useState, useRef } from "react";
 import { Chrono } from "react-chrono";
-
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
 
@@ -10,6 +9,25 @@ function Timeline({ items, onSelectItem }) {
 
   useEffect(() => {
     setIsClient(true);
+
+    const handleClick = (event) => {
+      const chronoItems = document.querySelectorAll(
+        ".TimelineCardHeader .chrono-item"
+      );
+
+      chronoItems.forEach((item, index) => {
+        if (item.contains(event.target)) {
+          const selectedItem = transformedItems[index];
+          onSelectItem(selectedItem);
+        }
+      });
+    };
+
+    document.addEventListener("click", handleClick);
+
+    return () => {
+      document.removeEventListener("click", handleClick);
+    };
   }, []);
 
   if (!isClient) {
@@ -33,14 +51,9 @@ function Timeline({ items, onSelectItem }) {
   return (
     <Chrono
       disableToolbar
-      onItemSelected={(e) => {
-        if (hasLoaded.current) {
-          onSelectItem(transformedItems[e.index]);
-        }
-        hasLoaded.current = true; // Set the flag to true after the first render
-      }}
       items={transformedItems}
       mode="VERTICAL_ALTERNATING"
+      allowDynamicUpdate={true}
       textDensity="LOW"
     />
   );

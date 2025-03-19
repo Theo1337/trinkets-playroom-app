@@ -99,7 +99,7 @@ function Home({ rawQuotes }) {
   ];
 
   return (
-    <div className="flex flex-col items-center md:h-screen p-8 bg-[#f3eae3] min-h-screen text-black ">
+    <div className="flex flex-col items-center md:min-h-screen p-8 bg-[#f3eae3] min-h-screen text-black ">
       <Head>
         <title>Cafofo Estelar</title>
         <meta name="description" content="Bem-vindo ao Cafofo Estelar!" />

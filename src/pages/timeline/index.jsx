@@ -89,8 +89,8 @@ function Home({ rawEvents }) {
             createdAt: new Date(),
             id: configs.id,
           })
-          .then(() => {
-            window.location.reload();
+          .then((res) => {
+            setItems([...items, res.data]);
           });
       } else {
         api
@@ -101,8 +101,8 @@ function Home({ rawEvents }) {
             formattedDate: adjustedDate,
             createdAt: new Date(),
           })
-          .then(() => {
-            window.location.reload();
+          .then((res) => {
+            setItems([...items, res.data]);
           });
       }
     }
@@ -200,8 +200,9 @@ function Home({ rawEvents }) {
             {configs.type === "edit" && (
               <Button
                 onClick={() => {
-                  api.delete(`/events/${configs.id}`);
-                  window.location.reload();
+                  api.delete(`/events/${configs.id}`).then((res) => {
+                    setItems(items.filter((item) => item.id !== configs.id));
+                  });
                 }}
                 variant="destructive"
               >
