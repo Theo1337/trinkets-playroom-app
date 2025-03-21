@@ -10,7 +10,7 @@ import { withHistory } from "slate-history";
 import { Editable, Slate, useSlate, withReact } from "slate-react";
 import { Button, Icon, Toolbar } from "./slate";
 
-import { Eye } from "lucide-react";
+import { Bold, Italic } from "lucide-react";
 
 const HOTKEYS = {
   "mod+b": "bold",
@@ -33,20 +33,20 @@ const TextEditor = () => {
       editor={editor}
       initialValue={initialValue}
     >
-      <Toolbar>
-        <MarkButton format="bold" icon="format_bold" />
-        <MarkButton format="italic" icon="format_italic" />
+      <Toolbar className="bg-gray-50 rounded-lg">
+        <MarkButton format="bold" icon={<Bold />} />
+        <MarkButton format="italic" icon={<Italic />} />
         <MarkButton format="underline" icon="format_underlined" />
         <MarkButton format="code" icon="code" />
         <BlockButton format="heading-one" icon="Eye" />
-        {/* <BlockButton format="heading-two" icon="looks_two" />
+        <BlockButton format="heading-two" icon="looks_two" />
         <BlockButton format="block-quote" icon="format_quote" />
         <BlockButton format="numbered-list" icon="format_list_numbered" />
         <BlockButton format="bulleted-list" icon="format_list_bulleted" />
         <BlockButton format="left" icon="format_align_left" />
         <BlockButton format="center" icon="format_align_center" />
         <BlockButton format="right" icon="format_align_right" />
-        <BlockButton format="justify" icon="format_align_justify" /> */}
+        <BlockButton format="justify" icon="format_align_justify" />
       </Toolbar>
       <Editable
         renderElement={renderElement}
@@ -209,7 +209,7 @@ const BlockButton = ({ format, icon }) => {
         toggleBlock(editor, format);
       }}
     >
-      {React.createElement("Eye")}
+      <Icon>{icon}</Icon>
     </Button>
   );
 };
