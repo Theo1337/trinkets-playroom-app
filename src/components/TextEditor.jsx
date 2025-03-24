@@ -1,5 +1,5 @@
 import isHotkey from "is-hotkey";
-import React, { useCallback, useMemo } from "react";
+import React, { useCallback, useMemo, useState, useEffect } from "react";
 import {
   Editor,
   Element as SlateElement,
@@ -8,52 +8,115 @@ import {
 } from "slate";
 import { withHistory } from "slate-history";
 import { Editable, Slate, useSlate, withReact } from "slate-react";
-import { Button, Icon, Toolbar } from "./slate";
+import { Button, Icon } from "./slate";
+import { Separator } from "./ui/separator";
+import { Input } from "./ui/input";
 
-import { Bold, Italic } from "lucide-react";
+import { format } from "date-fns";
+
+import {
+  Bold,
+  Italic,
+  Underline,
+  AlignLeft,
+  AlignCenter,
+  AlignRight,
+  AlignJustify,
+  Lock,
+  Calendar,
+  Save,
+  Settings,
+} from "lucide-react";
 
 const HOTKEYS = {
   "mod+b": "bold",
   "mod+i": "italic",
   "mod+u": "underline",
-  "mod+`": "code",
 };
 const LIST_TYPES = ["numbered-list", "bulleted-list"];
 const TEXT_ALIGN_TYPES = ["left", "center", "right", "justify"];
 
-const TextEditor = () => {
+const TextEditor = ({ user, date, pickDate }) => {
   const renderElement = useCallback((props) => <Element {...props} />, []);
   const renderLeaf = useCallback((props) => <Leaf {...props} />, []);
   const editor = useMemo(() => withHistory(withReact(createEditor())), []);
+
+  const [configs, setConfigs] = useState({ title: "", date: date });
+
   return (
     <Slate
-      onValueChange={(e) => {
-        console.log(e);
-      }}
+      // onValueChange={(e) => {
+      //   console.log(e);
+      // }}
       editor={editor}
       initialValue={initialValue}
     >
-      <Toolbar className="bg-gray-50 rounded-lg">
-        <MarkButton format="bold" icon={<Bold />} />
-        <MarkButton format="italic" icon={<Italic />} />
-        <MarkButton format="underline" icon="format_underlined" />
-        <MarkButton format="code" icon="code" />
-        <BlockButton format="heading-one" icon="Eye" />
-        <BlockButton format="heading-two" icon="looks_two" />
-        <BlockButton format="block-quote" icon="format_quote" />
-        <BlockButton format="numbered-list" icon="format_list_numbered" />
-        <BlockButton format="bulleted-list" icon="format_list_bulleted" />
-        <BlockButton format="left" icon="format_align_left" />
-        <BlockButton format="center" icon="format_align_center" />
-        <BlockButton format="right" icon="format_align_right" />
-        <BlockButton format="justify" icon="format_align_justify" />
-      </Toolbar>
+      <div
+        className={`sticky top-0 px-4 right-0 z-50 md:top-0 flex items-center justify-center w-full`}
+      >
+        <div className="flex-wrap flex-grow max-w-screen md:flex-nowrap md:flex-grow-0 rounded-lg flex w-min items-center my-4 p-4 justify-center gap-4 bg-gray-100 shadow-lg">
+          <MarkButton format="bold" icon={<Bold />} />
+          <MarkButton format="italic" icon={<Italic />} />
+          <MarkButton format="underline" icon={<Underline />} />
+          <div className="hidden md:w-2 md:h-8 md:flex items-center justify-center">
+            <Separator
+              className="bg-black/30 hidden md:block"
+              orientation="vertical"
+            />
+          </div>
+          <div className="w-full flex items-center justify-center gap-4">
+            <BlockButton format="left" icon={<AlignLeft />} />
+            <BlockButton format="center" icon={<AlignCenter />} />
+            <BlockButton format="right" icon={<AlignRight />} />
+            <BlockButton format="justify" icon={<AlignJustify />} />
+          </div>
+          <div className="hidden md:w-2 md:h-8 md:flex items-center justify-center">
+            <Separator
+              className="bg-black/30 hidden md:block"
+              orientation="vertical"
+            />
+          </div>
+          <div className="w-full flex items-center justify-center gap-4">
+            <div className="cursor-pointer transition hover:bg-red-500/20 flex items-center justify-center bg-white p-1 rounded-lg">
+              <Lock />
+            </div>
+            <div
+              onClick={pickDate}
+              className="cursor-pointer transition hover:bg-red-500/20 flex items-center justify-center bg-white p-1 rounded-lg"
+            >
+              <Calendar />
+            </div>
+            <div className="cursor-pointer transition hover:bg-red-500/20 flex items-center justify-center bg-white p-1 rounded-lg">
+              <Save />
+            </div>
+            <div className="cursor-pointer transition hover:bg-red-500/20 flex items-center justify-center bg-white p-1 rounded-lg">
+              <Settings />
+            </div>
+          </div>
+        </div>
+      </div>
+      <div className="bg-white w-full p-2 my-3 py-4 rounded-lg flex flex-col gap-2 px-12 items-center justify-center">
+        <div className="w-full">
+          <Input
+            value={configs.title}
+            onChange={(e) => {
+              setConfigs({ ...configs, title: e.target.value });
+            }}
+            placeholder="Título"
+            className="w-full text-center"
+            style={{ fontSize: "1.25rem" }}
+            variant="standard"
+          />
+        </div>
+        <div className="font-bold w-full text-center text-xl uppercase">
+          {format(configs.date, "PPP")}
+        </div>
+      </div>
       <Editable
         renderElement={renderElement}
         renderLeaf={renderLeaf}
-        placeholder="Enter some rich text…"
         spellCheck
-        className="outline-none"
+        className="outline-none bg-white rounded-lg p-6 min-h-screen transition  max-w-screen"
         autoFocus
         onKeyDown={(event) => {
           for (const hotkey in HOTKEYS) {
@@ -142,36 +205,6 @@ const Element = ({ attributes, children, element }) => {
           {children}
         </blockquote>
       );
-    case "bulleted-list":
-      return (
-        <ul style={style} {...attributes}>
-          {children}
-        </ul>
-      );
-    case "heading-one":
-      return (
-        <h1 style={style} {...attributes}>
-          {children}
-        </h1>
-      );
-    case "heading-two":
-      return (
-        <h2 style={style} {...attributes}>
-          {children}
-        </h2>
-      );
-    case "list-item":
-      return (
-        <li style={style} {...attributes}>
-          {children}
-        </li>
-      );
-    case "numbered-list":
-      return (
-        <ol style={style} {...attributes}>
-          {children}
-        </ol>
-      );
     default:
       return (
         <p style={style} {...attributes}>
@@ -183,9 +216,6 @@ const Element = ({ attributes, children, element }) => {
 const Leaf = ({ attributes, children, leaf }) => {
   if (leaf.bold) {
     children = <strong>{children}</strong>;
-  }
-  if (leaf.code) {
-    children = <code>{children}</code>;
   }
   if (leaf.italic) {
     children = <em>{children}</em>;
@@ -208,6 +238,7 @@ const BlockButton = ({ format, icon }) => {
         event.preventDefault();
         toggleBlock(editor, format);
       }}
+      className="hover:bg-red-500/20 transition  p-1 rounded-lg"
     >
       <Icon>{icon}</Icon>
     </Button>
@@ -222,6 +253,7 @@ const MarkButton = ({ format, icon }) => {
         event.preventDefault();
         toggleMark(editor, format);
       }}
+      className="hover:bg-red-500/20 transition  p-1 rounded-lg"
     >
       <Icon>{icon}</Icon>
     </Button>
@@ -239,36 +271,7 @@ const isAlignElement = (element) => {
 const initialValue = [
   {
     type: "paragraph",
-    children: [
-      { text: "This is editable " },
-      { text: "rich", bold: true },
-      { text: " text, " },
-      { text: "much", italic: true },
-      { text: " better than a " },
-      { text: "<textarea>", code: true },
-      { text: "!" },
-    ],
-  },
-  {
-    type: "paragraph",
-    children: [
-      {
-        text: "Since it's rich text, you can do things like turn a selection of text ",
-      },
-      { text: "bold", bold: true },
-      {
-        text: ", or add a semantically rendered block quote in the middle of the page, like this:",
-      },
-    ],
-  },
-  {
-    type: "block-quote",
-    children: [{ text: "A wise quote." }],
-  },
-  {
-    type: "paragraph",
-    align: "center",
-    children: [{ text: "Try it out for yourself!" }],
+    children: [{ text: "Digite aqui o que esta sentindo" }],
   },
 ];
 export default TextEditor;

@@ -1,5 +1,5 @@
 import { css, cx } from "@emotion/css";
-import React from "react";
+import React, { act } from "react";
 import ReactDOM from "react-dom";
 
 export const Button = React.forwardRef(
@@ -11,13 +11,14 @@ export const Button = React.forwardRef(
         className,
         css`
           cursor: pointer;
+          background-color: ${active ? "rgb(239 68 68 / 0.3)" : "#fff"};
           color: ${reversed
             ? active
               ? "white"
               : "#aaa"
             : active
             ? "black"
-            : "#ccc"};
+            : "black"};
         `
       )}
     />

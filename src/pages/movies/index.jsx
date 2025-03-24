@@ -161,6 +161,8 @@ function Home({ rawMovies }) {
     <Drawer onClose={resetState} className="w-full">
       <Head>
         <title>Cafofo Estelar - Lista de filmes</title>
+        <meta name="theme_color" content="#cbd5e1" />
+        <meta name="theme-color" content="#cbd5e1" />
       </Head>
       <div
         onClick={() => {

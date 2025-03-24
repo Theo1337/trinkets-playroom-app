@@ -86,6 +86,10 @@ body {
   font-family: "Leckerli One", sans-serif;
 }
 
+.font-body {
+  font-family: "Poppins", sans-serif;
+}
+
 @layer base {
   * {
     @apply border-border outline-ring/50;

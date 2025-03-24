@@ -112,6 +112,8 @@ function Home({ rawEvents }) {
     <Drawer onClose={resetState} open={configs.open} className="w-full">
       <Head>
         <title>Cafofo Estelar - Timeline</title>
+        <meta name="theme_color" content="#f0fdf4" />
+        <meta name="theme-color" content="#f0fdf4" />
       </Head>
       <div
         onClick={() => {

@@ -20,32 +20,17 @@ import { Trash2 } from "lucide-react";
 import { format, set, setDefaultOptions } from "date-fns";
 import { ptBR } from "date-fns/locale";
 
-function Quotes({ rawQuotes }) {
+function Quotes({ rawQuotes, user }) {
   const [configs, setConfigs] = useState({
     type: "add",
     id: 0,
     quote: "",
     author: "",
     date: new Date(),
-    authorId: Math.random().toString(16).slice(2),
+    authorId: user.id,
     error: false,
   });
   const [quotes, setQuotes] = useState(rawQuotes);
-  useEffect(() => {
-    const id = localStorage.getItem("author_id");
-    if (!id) {
-      setConfigs({
-        ...configs,
-        authorId: Math.random().toString(16).slice(2),
-      });
-      localStorage.setItem("author_id", configs.authorId);
-    } else {
-      setConfigs({
-        ...configs,
-        authorId: id,
-      });
-    }
-  }, []);
 
   const resetState = () => {
     setConfigs({

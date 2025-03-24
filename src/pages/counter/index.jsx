@@ -166,6 +166,8 @@ function Home({ rawCounters }) {
     <Drawer onClose={resetState} className="w-full">
       <Head>
         <title>Cafofo Estelar - Contadores</title>
+        <meta name="theme_color" content="#f3e8ff" />
+        <meta name="theme-color" content="#f3e8ff" />
       </Head>
       <div
         onClick={() => {
