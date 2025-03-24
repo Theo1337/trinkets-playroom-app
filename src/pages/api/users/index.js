@@ -1,10 +1,13 @@
 export default async function handler(req, res) {
   if (req.method === "GET") {
     const TOKEN = process.env.DISCORD_BOT_TOKEN;
-    const usersIds = ["1250558369937363107", "277539638397370369"];
+    const usersIds = [
+      { id: "1250558369937363107", pronoum: "a" },
+      { id: "277539638397370369", pronoum: "o" },
+    ];
 
-    async function getUsername(userId) {
-      const url = `https://discord.com/api/v9/users/${userId}`;
+    async function getUsername(user) {
+      const url = `https://discord.com/api/v9/users/${user.id}`;
       const response = await fetch(url, {
         headers: {
           Authorization: `Bot ${TOKEN}`,
@@ -19,7 +22,8 @@ export default async function handler(req, res) {
       return {
         name: data.username,
         avatar: data.avatar,
-        id: userId,
+        id: user.id,
+        pronoum: user.pronoum,
       };
     }
 

@@ -7,6 +7,7 @@ import {
   Timer,
   ChartGantt,
   CircleCheckBig,
+  LogOut,
 } from "lucide-react";
 
 import { Dialog, DialogTitle, DialogContent } from "@/components/ui/dialog";
@@ -110,6 +111,7 @@ function Home({ rawQuotes }) {
       name: "",
       avatar: "",
       id: "",
+      pronoum: "o",
     },
     users: [],
   });
@@ -140,8 +142,8 @@ function Home({ rawQuotes }) {
   }, [configs.user]);
 
   return (
-    <Dialog open={open} className="outline-none w-full">
-      <DialogContent className="bg-[#f3eae3] sm:max-w-[425px]">
+    <Dialog open={open} className="outline-none md:w-full">
+      <DialogContent className="bg-[#f3eae3] max-w-[375px] md:max-w-screen-md outline-none rounded-lg">
         <DialogTitle>Quem é você?</DialogTitle>
         <div className="flex flex-col-reverse md:flex-row-reverse gap-2 w-full items-center justify-center">
           {configs.users.map((user, i) => (
@@ -150,11 +152,11 @@ function Home({ rawQuotes }) {
               onMouseDown={() => {
                 setConfigs((prevConfigs) => ({
                   ...prevConfigs,
-                  newUser: false,
                   user: {
                     name: user.name,
                     avatar: user.avatar,
                     id: user.id,
+                    pronoum: user.pronoum,
                   },
                 }));
               }}
@@ -186,9 +188,9 @@ function Home({ rawQuotes }) {
           <title>Cafofo Estelar</title>
           <meta name="description" content="Bem-vindo ao Cafofo Estelar!" />
         </Head>
-        <div className="font-logo relative text-4xl text-neutral-700 mt-1">
+        <div className="font-logo md:block flex items-center justify-center relative text-4xl text-neutral-700 mt-1">
           Cafofo Estelar
-          {configs.user && (
+          {configs.user.avatar && (
             <div
               onClick={() => {
                 setOpen(true);
@@ -198,10 +200,11 @@ function Home({ rawQuotes }) {
                     name: "",
                     avatar: "",
                     id: "",
+                    pronoum: "o",
                   },
                 });
               }}
-              className="flex group flex-col items-center cursor-pointer absolute top-0 -right-80 rounded-full"
+              className="md:flex hidden group flex-col items-center cursor-pointer absolute -right-20 md:top-0 md:-right-80 rounded-full"
             >
               <img
                 width={512}
@@ -215,9 +218,50 @@ function Home({ rawQuotes }) {
             </div>
           )}
         </div>
-        <div className="text-xs text-neutral-500 mt-2 uppercase">
-          {"Bem-vinda ao Cafofo Estelar!"}
+        <div className="text-xs text-neutral-500 mt-2 -mb-2 uppercase">
+          {`Bem-vind${configs.user.pronoum} ao Cafofo Estelar!`}
         </div>
+        {configs.user.id && (
+          <Section title="Usuário">
+            <div className="flex items-center w-full justify-between">
+              <div className="flex gap-4 items-center justify-center w-max">
+                <img
+                  width={512}
+                  height={512}
+                  src={`https://cdn.discordapp.com/avatars/${configs.user.id}/${configs.user.avatar}`}
+                  className="w-14 aspect-square rounded-full"
+                />
+                <div>
+                  <div className="font-bold  underline">
+                    {configs.user.name}
+                  </div>
+                  <div className="text-[10px] text-neutral-400">
+                    {configs.user.id}
+                  </div>
+                </div>
+              </div>
+              <div
+                onClick={() => {
+                  setOpen(true);
+                  setConfigs({
+                    ...configs,
+                    user: {
+                      name: "",
+                      avatar: "",
+                      id: "",
+                      pronoum: "o",
+                    },
+                  });
+                }}
+                className="rounded-full p-2 w-max"
+              >
+                <div className="flex items-center bg-black/5 p-2 rounded-full justify-center gap-2">
+                  <LogOut className="text-red-500 text-2xl" />
+                </div>
+              </div>
+            </div>
+          </Section>
+        )}
         <Section title="Frase do dia">
           <Quotes user={configs.user} rawQuotes={rawQuotes} />
         </Section>
