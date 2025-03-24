@@ -27,10 +27,17 @@ function Quotes({ rawQuotes, user }) {
     quote: "",
     author: "",
     date: new Date(),
-    authorId: user.id,
+    authorId: "",
     error: false,
   });
   const [quotes, setQuotes] = useState(rawQuotes);
+
+  useEffect(() => {
+    setConfigs({
+      ...configs,
+      authorId: user.id,
+    });
+  }, [user]);
 
   const resetState = () => {
     setConfigs({
@@ -54,7 +61,7 @@ function Quotes({ rawQuotes, user }) {
             id: configs.id,
             quote: configs.quote,
             author: configs.author,
-            authorId: configs.authorId,
+            authorId: user.id,
             date: new Date(),
           })
           .then((res) => {
@@ -69,7 +76,7 @@ function Quotes({ rawQuotes, user }) {
           .post("/quotes", {
             quote: configs.quote,
             author: configs.author,
-            authorId: configs.authorId,
+            authorId: user.id,
             date: new Date(configs.date),
           })
           .then((res) => {
@@ -82,6 +89,12 @@ function Quotes({ rawQuotes, user }) {
   };
 
   setDefaultOptions({ locale: ptBR });
+
+  console.log(
+    quotes.filter((each) => each.authorId === configs.authorId).length > 0,
+    configs.authorId,
+    quotes[0]
+  );
 
   return (
     <Drawer onClose={resetState}>

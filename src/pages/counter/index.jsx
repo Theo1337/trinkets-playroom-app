@@ -7,7 +7,7 @@ import { prisma } from "@/lib/database";
 
 import { format, set, setDefaultOptions } from "date-fns";
 
-import { Section } from "../../components";
+import { Section, LoadingScreen } from "../../components";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -47,6 +47,7 @@ export const getServerSideProps = async () => {
 
 /** @param {import('next').InferGetServerSidePropsType<typeof getServerSideProps> } props */
 function Home({ rawCounters }) {
+  const [pageUnload, setPageUnload] = useState(false);
   const [counters, setCounters] = useState(rawCounters);
   const [configs, setConfigs] = useState({
     type: "add",
@@ -169,8 +170,10 @@ function Home({ rawCounters }) {
         <meta name="theme_color" content="#f3e8ff" />
         <meta name="theme-color" content="#f3e8ff" />
       </Head>
+      <LoadingScreen open={pageUnload} />
       <div
         onClick={() => {
+          setPageUnload(true);
           window.location.href = "/";
         }}
         className="flex items-center justify-center absolute top-0 gap-2 p-4 group cursor-pointer"

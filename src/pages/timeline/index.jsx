@@ -3,10 +3,10 @@ import React, { useState } from "react";
 import { api } from "@/utils";
 import { prisma } from "@/lib/database";
 
-import { format, setDefaultOptions, addDays } from "date-fns";
+import { format, setDefaultOptions, addDays, set } from "date-fns";
 import { id, ptBR } from "date-fns/locale";
 
-import { Section, Timeline } from "@/components";
+import { Section, LoadingScreen, Timeline } from "@/components";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
@@ -53,6 +53,7 @@ export const getServerSideProps = async () => {
 function Home({ rawEvents }) {
   setDefaultOptions({ locale: ptBR });
 
+  const [pageUnload, setPageUnload] = useState(false);
   const [configs, setConfigs] = useState({
     date: new Date(),
     type: "add",
@@ -115,8 +116,10 @@ function Home({ rawEvents }) {
         <meta name="theme_color" content="#f0fdf4" />
         <meta name="theme-color" content="#f0fdf4" />
       </Head>
+      <LoadingScreen open={pageUnload} />
       <div
         onClick={() => {
+          setPageUnload(true);
           window.location.href = "/";
         }}
         className="flex items-center justify-center absolute top-0 gap-2 p-4 group cursor-pointer"

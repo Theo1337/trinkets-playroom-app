@@ -5,7 +5,7 @@ import { prisma } from "@/lib/database";
 
 import { format, setDefaultOptions } from "date-fns";
 
-import { Section } from "../../components";
+import { Section, LoadingScreen } from "../../components";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -77,6 +77,7 @@ function Home({ rawMovies }) {
 
   const [movieSearch, setMovieSearch] = useState([]);
 
+  const [pageUnload, setPageUnload] = useState(false);
   const [loading, setLoading] = useState(false);
 
   setDefaultOptions({ locale: ptBR });
@@ -164,8 +165,10 @@ function Home({ rawMovies }) {
         <meta name="theme_color" content="#cbd5e1" />
         <meta name="theme-color" content="#cbd5e1" />
       </Head>
+      <LoadingScreen open={pageUnload} />
       <div
         onClick={() => {
+          setPageUnload(true);
           window.location.href = "/";
         }}
         className="flex items-center justify-center absolute top-0 gap-2 p-4 group cursor-pointer"
