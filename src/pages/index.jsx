@@ -117,6 +117,14 @@ function Home({ rawQuotes }) {
     users: [],
   });
 
+  const getUsers = async () => {
+    const users = await api.get("/users");
+    setConfigs((prevConfigs) => ({
+      ...prevConfigs,
+      users: users.data,
+    }));
+  };
+
   useEffect(() => {
     const user = localStorage.getItem("user");
     if (user) {
@@ -125,22 +133,23 @@ function Home({ rawQuotes }) {
         user: JSON.parse(user),
       }));
     }
-
-    api.get("/users").then((res) => {
-      setConfigs((prevConfigs) => ({
-        ...prevConfigs,
-        users: res.data,
-      }));
-    });
   }, []);
 
   useEffect(() => {
     if (!configs.user.id) {
+      getUsers();
+
       setOpen(true);
     } else {
       setOpen(false);
     }
   }, [configs.user]);
+
+  useEffect(() => {
+    if (loading) {
+      setLoading(false);
+    }
+  }, []);
 
   return (
     <div>
@@ -153,6 +162,7 @@ function Home({ rawQuotes }) {
               <div
                 key={i}
                 onMouseDown={() => {
+                  getUsers();
                   setConfigs((prevConfigs) => ({
                     ...prevConfigs,
                     user: {

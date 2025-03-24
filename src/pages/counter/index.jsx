@@ -303,7 +303,7 @@ function Home({ rawCounters }) {
                   </div>
                 </DrawerTrigger>
 
-                <div className="font-bold p-4 text-center text-sm max-w-screen truncate">
+                <div className="font-bold p-4 text-center text-sm max-w-[300px] truncate">
                   {counter.name}
                 </div>
                 <div className="font-bold text-4xl">{counter.value}</div>

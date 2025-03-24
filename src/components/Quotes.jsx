@@ -90,12 +90,6 @@ function Quotes({ rawQuotes, user }) {
 
   setDefaultOptions({ locale: ptBR });
 
-  console.log(
-    quotes.filter((each) => each.authorId === configs.authorId).length > 0,
-    configs.authorId,
-    quotes[0]
-  );
-
   return (
     <Drawer onClose={resetState}>
       <div>
