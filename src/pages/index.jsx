@@ -145,11 +145,7 @@ function Home({ rawQuotes }) {
     }
   }, [configs.user]);
 
-  useEffect(() => {
-    if (loading) {
-      setLoading(false);
-    }
-  }, []);
+  useEffect(() => {}, [loading]);
 
   return (
     <div>
@@ -157,7 +153,7 @@ function Home({ rawQuotes }) {
       <Dialog open={open} className="outline-none md:w-full">
         <DialogContent className="bg-[#f3eae3] max-w-[375px] md:max-w-screen-md outline-none rounded-lg">
           <DialogTitle>Quem é você?</DialogTitle>
-          <div className="flex flex-col-reverse md:flex-row-reverse gap-2 w-full items-center justify-center">
+          <div className="flex flex-col-reverse md:flex-row-reverse gap-2 w-full items-center justify-center ">
             {configs.users.map((user, i) => (
               <div
                 key={i}
@@ -235,7 +231,7 @@ function Home({ rawQuotes }) {
           </div>
           {configs.user.id && (
             <Section className="md:hidden" title="Usuário">
-              <div className="flex items-center w-full justify-between">
+              <div className="flex items-center bg-white/50 p-2 rounded-lg w-full  justify-between">
                 <div className="flex gap-4 items-center justify-center w-max">
                   <img
                     width={512}
