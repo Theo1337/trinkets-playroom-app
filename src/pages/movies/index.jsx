@@ -87,6 +87,7 @@ function Home({ rawMovies }) {
     setConfigs({
       name: "",
       image: "",
+      providers: [],
       watched: false,
       date: new Date(),
       dateWatched: new Date(),
@@ -107,6 +108,7 @@ function Home({ rawMovies }) {
             id: configs.id,
             name: configs.name,
             image: configs.image,
+            providers: JSON.stringify(configs.providers),
             date: new Date(configs.date),
             watched: configs.watched,
             dateWatched: new Date(configs.dateWatched),
@@ -125,6 +127,7 @@ function Home({ rawMovies }) {
           .post("/movie", {
             name: configs.name,
             image: configs.image,
+            providers: JSON.stringify(configs.providers),
             date: new Date(configs.date),
             watched: configs.watched,
             dateWatched: new Date(configs.dateWatched),
@@ -210,14 +213,19 @@ function Home({ rawMovies }) {
                           key={i}
                           className="flex even:bg-neutral-200 items-center justify-center gap-2 w-full bg-neutral-50 p-4 pr-4 text-xs text-neutral-400 hover:bg-neutral-100 cursor-pointer"
                           onClick={() => {
-                            setConfigs({
-                              ...configs,
-                              name: movie.title,
-                              image: `https://image.tmdb.org/t/p/w500${movie.poster_path}`,
-                              year: movie.release_date,
-                            });
+                            api
+                              .get("/movie/search/providers?id=" + movie.id)
+                              .then((res) => {
+                                setConfigs({
+                                  ...configs,
+                                  name: movie.title,
+                                  image: `https://image.tmdb.org/t/p/w500${movie.poster_path}`,
+                                  year: movie.release_date,
+                                  providers: res.data.providers,
+                                });
 
-                            setMovieSearch([]);
+                                setMovieSearch([]);
+                              });
                           }}
                         >
                           <div className="flex gap-4 items-center justify-center">
@@ -414,6 +422,7 @@ function Home({ rawMovies }) {
                             id: movie.id,
                             name: movie.name,
                             image: movie.image,
+                            providers: movie.providers,
                             year: movie.year,
                             watched: movie.watched,
                             date: movie.date,
@@ -421,7 +430,7 @@ function Home({ rawMovies }) {
                             error: false,
                           });
                         }}
-                        className="transition max-w-[200px] h-[250px] relative cursor-pointer flex flex-col md:h-full overflow-hidden items-center pb-4 rounded-md bg-white hover:bg-neutral-200 "
+                        className="transition max-w-[200px] h-[250px] relative cursor-pointer flex flex-col md:h-full  items-center pb-4 rounded-md bg-white hover:bg-neutral-200 "
                       >
                         {movie.image ? (
                           <img
@@ -442,6 +451,33 @@ function Home({ rawMovies }) {
                         </div>
                         <div className="text-xs text-neutral-500 flex items-center justify-center text-center px-4 w-full">
                           {format(movie.date, "PPP")}
+                        </div>
+                        <div>
+                          {movie.providers && movie.providers !== "[]" && (
+                            <div className="flex items-center justify-end absolute z-10 bg-white/30 rounded-t-lg p-2 w-max pr-6 bottom-[70px] right-0 ">
+                              {JSON.parse(movie.providers).map(
+                                (provider, i) => (
+                                  <img
+                                    src={`https://image.tmdb.org/t/p/w500${provider.logo_path}`}
+                                    alt={movie.title}
+                                    title={provider.provider_name}
+                                    width={
+                                      JSON.parse(movie.providers).length > 1
+                                        ? 42
+                                        : 64
+                                    }
+                                    height={
+                                      JSON.parse(movie.providers).length > 1
+                                        ? 42
+                                        : 64
+                                    }
+                                    className="rounded-full object-cover -mr-4"
+                                    key={i}
+                                  />
+                                )
+                              )}
+                            </div>
+                          )}
                         </div>
                       </div>
                     </DrawerTrigger>
