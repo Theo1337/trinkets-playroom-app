@@ -387,11 +387,13 @@ function Home({ rawPages }) {
                     <Calendar
                       mode="single"
                       onDayClick={(e) => {
-                        const page = pages.filter(
-                          (each) =>
-                            format(each.date, "yyyy-MM-dd") ==
-                            format(e, "yyyy-MM-dd")
-                        )[0]
+                        const page = pages
+                          .filter((each) => each.userId === configs.user)
+                          .filter(
+                            (each) =>
+                              format(each.date, "yyyy-MM-dd") ==
+                              format(e, "yyyy-MM-dd")
+                          )[0]
                           ? pages.filter(
                               (each) =>
                                 format(each.date, "yyyy-MM-dd") ==
