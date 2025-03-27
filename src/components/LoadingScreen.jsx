@@ -4,18 +4,26 @@ import { Dialog, DialogTitle, DialogContent } from "@/components/ui/dialog";
 
 function LoadingScreen({ open }) {
   return (
-    <Dialog open={open}>
-      <DialogContent className="border-0 outline-0 shadow-none">
-        <div className="flex flex-col gap-4 items-center justify-center outline-none">
-          <DialogTitle className="font-bold text-xl text-white text-center">
-            Carregando ...
-          </DialogTitle>
-          <div className="flex items-center justify-center gap-2 w-full">
-            <OrbitProgress color="white" />
+    <div>
+      {open && (
+        <div className="fixed top-2 w-full z-50 md:hidden">
+          <div className="flex items-center justify-center gap-2 p-2">
+            <div className="bg-stone-700 shadow-lg aspect-square p-2 rounded-full">
+              <OrbitProgress
+                style={{
+                  fontSize: "5px",
+                  fontWeight: "bold",
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}
+                color="#0ea5e9"
+              />
+            </div>
           </div>
         </div>
-      </DialogContent>
-    </Dialog>
+      )}
+    </div>
   );
 }
 
