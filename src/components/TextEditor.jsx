@@ -68,10 +68,9 @@ const TextEditor = ({
         passwordProtected: currentPageValues.passwordProtected,
         password: currentPageValues.password,
         value: JSON.parse(currentPageValues.text),
-        saved: configs.title ? true : false,
+        saved: currentPageValues.title ? true : false,
       });
     }
-
   }, [currentPageValues]);
 
   return (

@@ -98,6 +98,8 @@ function Home({ rawPages }) {
   }, [configs.loggedIn, configs.pickedDate, configs.saved]);
 
   const saveItem = (e) => {
+    console.log(e);
+
     if (e.saved) {
       api
         .put(`/journals/${e.id}`, {
