@@ -84,18 +84,18 @@ function Home({ rawQuotes }) {
       url: "/timeline",
     },
     {
+      name: "Diário",
+      icon: <BookHeart className="group-hover:text-red-500 transition" />,
+      maintence: false,
+      url: "/journal",
+    },
+    {
       name: "Checklist",
       icon: (
         <CircleCheckBig className="group-hover:text-purple-500 transition" />
       ),
       maintence: true,
       url: "/timeline",
-    },
-    {
-      name: "Diário",
-      icon: <BookHeart className="group-hover:text-red-500 transition" />,
-      maintence: true,
-      url: "/journal",
     },
     {
       name: "Sonhos",

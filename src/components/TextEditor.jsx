@@ -25,7 +25,7 @@ import {
   Lock,
   Calendar,
   Save,
-  Settings,
+  Trash2,
 } from "lucide-react";
 
 const HOTKEYS = {
@@ -36,20 +36,51 @@ const HOTKEYS = {
 const LIST_TYPES = ["numbered-list", "bulleted-list"];
 const TEXT_ALIGN_TYPES = ["left", "center", "right", "justify"];
 
-const TextEditor = ({ user, date, pickDate }) => {
+const TextEditor = ({
+  date,
+  togglePasswordDialog,
+  pickDate,
+  saveData,
+  deleteItem,
+  currentPage,
+  currentPageValues,
+}) => {
   const renderElement = useCallback((props) => <Element {...props} />, []);
   const renderLeaf = useCallback((props) => <Leaf {...props} />, []);
   const editor = useMemo(() => withHistory(withReact(createEditor())), []);
 
-  const [configs, setConfigs] = useState({ title: "", date: date });
+  const [configs, setConfigs] = useState({
+    id: currentPage,
+    title: "",
+    passwordProtected: false,
+    password: "",
+    date: date,
+    value: [],
+    saved: false,
+  });
+
+  useEffect(() => {
+    if (currentPageValues) {
+      setConfigs({
+        ...configs,
+        id: currentPageValues.id,
+        title: currentPageValues.title,
+        passwordProtected: currentPageValues.passwordProtected,
+        password: currentPageValues.password,
+        value: JSON.parse(currentPageValues.text),
+        saved: configs.title ? true : false,
+      });
+    }
+
+  }, [currentPageValues]);
 
   return (
     <Slate
-      // onValueChange={(e) => {
-      //   console.log(e);
-      // }}
+      onValueChange={(e) => {
+        setConfigs({ ...configs, value: e });
+      }}
       editor={editor}
-      initialValue={initialValue}
+      initialValue={JSON.parse(currentPageValues.text)}
     >
       <div
         className={`sticky top-0 px-4 right-0 z-50 md:top-0 flex items-center justify-center w-full`}
@@ -77,7 +108,11 @@ const TextEditor = ({ user, date, pickDate }) => {
             />
           </div>
           <div className="w-full flex items-center justify-center gap-4">
-            <div className="cursor-pointer transition hover:bg-red-500/20 flex items-center justify-center bg-white p-1 rounded-lg">
+            <div
+              aria-selected={configs.passwordProtected}
+              onClick={togglePasswordDialog}
+              className="aria-selected:bg-red-500/20 cursor-pointer transition hover:bg-red-500/20 flex items-center justify-center bg-white p-1 rounded-lg"
+            >
               <Lock />
             </div>
             <div
@@ -86,11 +121,25 @@ const TextEditor = ({ user, date, pickDate }) => {
             >
               <Calendar />
             </div>
-            <div className="cursor-pointer transition hover:bg-red-500/20 flex items-center justify-center bg-white p-1 rounded-lg">
+            <div
+              onClick={() => {
+                saveData(configs);
+
+                setTimeout(() => {
+                  setConfigs({ ...configs, saved: true });
+                }, 100);
+              }}
+              className="cursor-pointer transition hover:bg-red-500/20 flex items-center justify-center bg-white p-1 rounded-lg"
+            >
               <Save />
             </div>
-            <div className="cursor-pointer transition hover:bg-red-500/20 flex items-center justify-center bg-white p-1 rounded-lg">
-              <Settings />
+            <div
+              onClick={() => {
+                deleteItem(configs);
+              }}
+              className="cursor-pointer transition hover:bg-red-500 hover:text-white flex items-center justify-center bg-white p-1 rounded-lg"
+            >
+              <Trash2 />
             </div>
           </div>
         </div>
@@ -268,10 +317,4 @@ const isListType = (format) => {
 const isAlignElement = (element) => {
   return "align" in element;
 };
-const initialValue = [
-  {
-    type: "paragraph",
-    children: [{ text: "Digite aqui o que esta sentindo" }],
-  },
-];
 export default TextEditor;

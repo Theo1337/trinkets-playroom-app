@@ -459,16 +459,16 @@ function Home({ rawMovies }) {
                                 (provider, i) => (
                                   <img
                                     src={`https://image.tmdb.org/t/p/w500${provider.logo_path}`}
-                                    alt={movie.title}
+                                    alt={provider.provider_name}
                                     title={provider.provider_name}
                                     width={
                                       JSON.parse(movie.providers).length > 1
-                                        ? 42
+                                        ? 48
                                         : 64
                                     }
                                     height={
                                       JSON.parse(movie.providers).length > 1
-                                        ? 42
+                                        ? 48
                                         : 64
                                     }
                                     className="rounded-full object-cover -mr-4"

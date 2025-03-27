@@ -5,7 +5,7 @@ import { Dialog, DialogTitle, DialogContent } from "@/components/ui/dialog";
 function LoadingScreen({ open }) {
   return (
     <Dialog open={open}>
-      <DialogContent className="border-0 outline-0">
+      <DialogContent className="border-0 outline-0 shadow-none">
         <div className="flex flex-col gap-4 items-center justify-center outline-none">
           <DialogTitle className="font-bold text-xl text-white text-center">
             Carregando ...
