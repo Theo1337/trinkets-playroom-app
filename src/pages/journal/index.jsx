@@ -76,6 +76,7 @@ function Home({ rawPages }) {
     type: "text",
   });
   const [passwordValue, setPasswordValue] = useState(currentPage.password);
+  const [savedItem, setSavedItem] = useState(false);
 
   const [pages, setPages] = useState(rawPages);
 
@@ -114,6 +115,8 @@ function Home({ rawPages }) {
           );
 
           setCurrentPage(res.data);
+
+          setSavedItem(true);
         });
     } else {
       api
@@ -131,12 +134,18 @@ function Home({ rawPages }) {
             ...configs,
             currentPage: res.data.id,
           });
+
+          setSavedItem(true);
         });
     }
     setConfigs({
       ...configs,
       saved: e.saved,
     });
+
+    setTimeout(() => {
+      setSavedItem(false);
+    }, 3000);
   };
 
   const resetState = () => {
@@ -159,7 +168,10 @@ function Home({ rawPages }) {
   };
 
   return (
-    <Dialog open={passwordDialog.open} className="outline-none md:w-full">
+    <Dialog
+      open={passwordDialog.open}
+      className="outline-none relative md:w-full"
+    >
       <DialogContent className="border-0 outline-0 bg-white md:w-full md:translate-y-0 w-[375px] rounded-lg -translate-y-40">
         <DialogTitle>Senha</DialogTitle>
         <div className="w-[330px] md:w-full">
@@ -282,6 +294,14 @@ function Home({ rawPages }) {
         </div>
       </DialogContent>
 
+      {savedItem && (
+        <div className="fixed bottom-2 w-full flex items-center z-50 justify-center gap-2 text-white">
+          <div className="bg-green-500 rounded-full px-4 p-2 text-xs font-bold uppercase">
+            Diário salvo!
+          </div>
+        </div>
+      )}
+
       <div>
         <div
           onClick={() => {
@@ -394,14 +414,26 @@ function Home({ rawPages }) {
                               format(each.date, "yyyy-MM-dd") ==
                               format(e, "yyyy-MM-dd")
                           )[0]
-                          ? pages.filter(
+                          ? pages
+                              .filter((each) => each.userId === configs.user)
+                              .filter(
+                                (each) =>
+                                  format(each.date, "yyyy-MM-dd") ==
+                                  format(e, "yyyy-MM-dd")
+                              )[0]
+                          : currentPage;
+
+                        setCurrentPage(page);
+
+                        console.log(
+                          pages
+                            .filter((each) => each.userId === configs.user)
+                            .filter(
                               (each) =>
                                 format(each.date, "yyyy-MM-dd") ==
                                 format(e, "yyyy-MM-dd")
                             )[0]
-                          : currentPage;
-
-                        setCurrentPage(page);
+                        );
 
                         setConfigs({
                           ...configs,
