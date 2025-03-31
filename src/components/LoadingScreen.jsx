@@ -11,7 +11,7 @@ function LoadingScreen({ open }) {
             <div className="bg-stone-700 shadow-lg aspect-square p-2 rounded-full">
               <OrbitProgress
                 style={{
-                  fontSize: "8px",
+                  fontSize: "5px",
                   fontWeight: "bold",
                   display: "flex",
                   justifyContent: "center",
