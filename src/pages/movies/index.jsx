@@ -467,7 +467,7 @@ function Home({ rawMovies }) {
                             error: false,
                           });
                         }}
-                        className="transition max-w-[200px] h-[250px] relative cursor-pointer flex flex-col md:h-full  items-center rounded-md bg-white hover:bg-neutral-200 "
+                        className="transition max-w-[200px] h-full relative cursor-pointer flex flex-col items-center rounded-md bg-white hover:bg-neutral-200 "
                       >
                         {movie.image ? (
                           <img
