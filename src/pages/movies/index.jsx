@@ -299,6 +299,20 @@ function Home({ rawMovies }) {
                                   </div>
                                 )}
                               </div>
+                              <div className="flex items-center justify-center gap-2 flex-wrap mt-2">
+                                {movie.genre_ids.map((genre, i) => (
+                                  <div
+                                    className="text-xs bg-black text-white px-2 rounded-lg"
+                                    key={i}
+                                  >
+                                    {
+                                      genres_ids.find(
+                                        (each) => each.id === genre
+                                      )?.name
+                                    }
+                                  </div>
+                                ))}
+                              </div>
                             </div>
                           </div>
                         </div>

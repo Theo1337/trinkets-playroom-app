@@ -1,6 +1,5 @@
 import React from "react";
 import { OrbitProgress } from "react-loading-indicators";
-import { Dialog, DialogTitle, DialogContent } from "@/components/ui/dialog";
 
 function LoadingScreen({ open }) {
   return (
