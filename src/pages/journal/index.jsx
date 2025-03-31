@@ -362,7 +362,7 @@ function Home({ rawPages }) {
             </Section>
           ) : configs.pickedDate ? (
             <Section>
-              <div className="max-w-screen w-full md:scale-75 md:-translate-y-28">
+              <div className="max-w-screen w-full ">
                 <TextEditor
                   user={configs.user}
                   date={configs.date}

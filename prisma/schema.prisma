@@ -12,6 +12,7 @@ model Movies {
     id Int @id @default(autoincrement())
     name String
     image String?
+    genres String @default("[]")
     providers String?
     date DateTime @db.Timestamp(0)
     watched Boolean @default(false)

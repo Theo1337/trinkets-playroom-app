@@ -70,11 +70,13 @@
 .gallery .floating_content[data-images="video"] > * {
   /* aspect-ratio: 16/9; */
   width: 200px;
-  height: 320px;
+  /* height: 440px; */
+  /* height: max-content; */
 }
 
 .gallery .floating_content[data-images="square"] > * {
-  aspect-ratio: 1;
+  width: 200px;
+  height: 320px;
 }
 
 .gallery .floating_content[data-images="regular"] > * {

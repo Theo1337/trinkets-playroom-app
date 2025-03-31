@@ -82,7 +82,7 @@ const TextEditor = ({
       initialValue={JSON.parse(currentPageValues.text)}
     >
       <div
-        className={`sticky top-0 px-4 right-0 z-50 md:top-0 flex items-center justify-center w-full`}
+        className={`sticky bottom-0 px-4 right-0 z-50 md:top-0 flex items-center justify-center w-full`}
       >
         <div className="flex-wrap flex-grow max-w-screen md:flex-nowrap md:flex-grow-0 rounded-lg flex w-min items-center my-4 p-4 justify-center gap-4 bg-gray-100 shadow-lg">
           <MarkButton format="bold" icon={<Bold />} />

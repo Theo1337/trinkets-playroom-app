@@ -68,14 +68,39 @@ function Home({ rawMovies }) {
     name: "",
     image: "",
     year: "",
+    providers: [],
+    genres: [],
     watched: false,
     date: new Date(),
     dateWatched: new Date(),
     error: false,
     timeout: null,
   });
+  const [editedMovie, setEditedMovie] = useState(false);
 
   const [movieSearch, setMovieSearch] = useState([]);
+
+  const genres_ids = [
+    { name: "Ação", id: 28 },
+    { name: "Aventura", id: 12 },
+    { name: "Animação", id: 16 },
+    { name: "Comédia", id: 35 },
+    { name: "Crime", id: 80 },
+    { name: "Documentário", id: 99 },
+    { name: "Drama", id: 18 },
+    { name: "Família", id: 10751 },
+    { name: "Fantasia", id: 14 },
+    { name: "História", id: 36 },
+    { name: "Terror", id: 27 },
+    { name: "Música", id: 10402 },
+    { name: "Mistério", id: 9648 },
+    { name: "Romance", id: 10749 },
+    { name: "Ficção Científica", id: 878 },
+    { name: "Filme para TV", id: 10770 },
+    { name: "Suspense", id: 53 },
+    { name: "Guerra", id: 10752 },
+    { name: "Faroeste", id: 37 },
+  ];
 
   const [pageUnload, setPageUnload] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -93,8 +118,8 @@ function Home({ rawMovies }) {
       dateWatched: new Date(),
       error: false,
       timeout: null,
-      keyboardTimeout: null,
     });
+    setEditedMovie(false);
     setLoading(false);
   };
 
@@ -103,12 +128,16 @@ function Home({ rawMovies }) {
       setLoading(true);
 
       if (configs.type === "edit") {
+        console.log(editedMovie);
+        if (editedMovie === false) return setTimeout(() => resetState(), 1000);
+
         api
           .put(`/movie/${configs.id}`, {
             id: configs.id,
             name: configs.name,
             image: configs.image,
             providers: JSON.stringify(configs.providers),
+            genres: JSON.stringify(configs.genres),
             date: new Date(configs.date),
             watched: configs.watched,
             dateWatched: new Date(configs.dateWatched),
@@ -117,6 +146,11 @@ function Home({ rawMovies }) {
             setMovies(
               movies.map((each) => (each.id === configs.id ? res.data : each))
             );
+
+            setConfigs({
+              ...configs,
+              lastMovieImage: configs.image,
+            });
 
             setTimeout(() => {
               resetState();
@@ -128,6 +162,7 @@ function Home({ rawMovies }) {
             name: configs.name,
             image: configs.image,
             providers: JSON.stringify(configs.providers),
+            genres: JSON.stringify(configs.genres),
             date: new Date(configs.date),
             watched: configs.watched,
             dateWatched: new Date(configs.dateWatched),
@@ -220,9 +255,12 @@ function Home({ rawMovies }) {
                                   ...configs,
                                   name: movie.title,
                                   image: `https://image.tmdb.org/t/p/w500${movie.poster_path}`,
+                                  genres: movie.genre_ids,
                                   year: movie.release_date,
                                   providers: res.data.providers,
                                 });
+
+                                setEditedMovie(true);
 
                                 setMovieSearch([]);
                               });
@@ -245,7 +283,7 @@ function Home({ rawMovies }) {
                                 </div>
                               )}
                             </div>
-                            <div className="w-full grid place-items-center   text-black font-bold text-center">
+                            <div className="w-full grid place-items-center text-black font-bold text-center">
                               <div>{movie.title}</div>
                               <div>
                                 {movie.release_date ? (
@@ -272,11 +310,6 @@ function Home({ rawMovies }) {
                   placeholder="Filme"
                   value={configs.name}
                   id="search-input"
-                  onKeyDown={(e) => {
-                    if (e.key === "Enter") {
-                      saveItem();
-                    }
-                  }}
                   className={`${
                     configs.name.length > 0 &&
                     movieSearch.length > 0 &&
@@ -335,6 +368,7 @@ function Home({ rawMovies }) {
                     mode="single"
                     selected={configs.dateWatched}
                     onSelect={(e) => {
+                      setEditedMovie(true);
                       setConfigs({ ...configs, dateWatched: e });
                     }}
                     initialFocus
@@ -350,11 +384,13 @@ function Home({ rawMovies }) {
                   className="w-[200px] h-auto rounded-lg"
                 />
 
-                <div className="uppercase flex items-start justify-center text-lg text-center mt-2 ">
+                <div className="uppercase flex items-start justify-center gap-1 text-lg text-center mt-2 ">
                   <div
                     className={`font-bold ${
-                      configs.type === "edit" ? "max-w-[85%]" : "max-w-[15ch]"
-                    } truncate`}
+                      configs.type === "edit"
+                        ? "sm:max-w-[85%]"
+                        : "sm:max-w-[15ch]"
+                    } sm:truncate`}
                   >
                     {configs.name}
                   </div>
@@ -394,7 +430,7 @@ function Home({ rawMovies }) {
             ) : (
               <Button
                 onClick={saveItem}
-                disabled={!configs.name}
+                disabled={!configs.image}
                 variant="movie"
                 className="w-full"
               >
@@ -422,6 +458,7 @@ function Home({ rawMovies }) {
                             id: movie.id,
                             name: movie.name,
                             image: movie.image,
+                            genres: movie.genres,
                             providers: movie.providers,
                             year: movie.year,
                             watched: movie.watched,
@@ -430,7 +467,7 @@ function Home({ rawMovies }) {
                             error: false,
                           });
                         }}
-                        className="transition max-w-[200px] h-[250px] relative cursor-pointer flex flex-col md:h-full  items-center pb-4 rounded-md bg-white hover:bg-neutral-200 "
+                        className="transition max-w-[200px] h-[250px] relative cursor-pointer flex flex-col md:h-full  items-center rounded-md bg-white hover:bg-neutral-200 "
                       >
                         {movie.image ? (
                           <img
@@ -446,38 +483,56 @@ function Home({ rawMovies }) {
                             </div>
                           </div>
                         )}
-                        <div className="font-bold p-4 text-center max-w-[200px] truncate">
-                          {movie.name}
-                        </div>
-                        <div className="text-xs text-neutral-500 flex items-center justify-center text-center px-4 w-full">
-                          {format(movie.date, "PPP")}
-                        </div>
-                        <div>
-                          {movie.providers && movie.providers !== "[]" && (
-                            <div className="flex items-center justify-end absolute z-10 bg-white/30 rounded-t-lg p-2 w-max pr-6 bottom-[70px] right-0 ">
-                              {JSON.parse(movie.providers).map(
-                                (provider, i) => (
-                                  <img
-                                    src={`https://image.tmdb.org/t/p/w500${provider.logo_path}`}
-                                    alt={provider.provider_name}
-                                    title={provider.provider_name}
-                                    width={
-                                      JSON.parse(movie.providers).length > 1
-                                        ? 48
-                                        : 64
-                                    }
-                                    height={
-                                      JSON.parse(movie.providers).length > 1
-                                        ? 48
-                                        : 64
-                                    }
-                                    className="rounded-full object-cover -mr-4"
-                                    key={i}
-                                  />
-                                )
-                              )}
+                        <div className="w-full h-full pb-4 flex items-center justify-center flex-col gap-2">
+                          <div className="flex items-center flex-col  w-full h-full  text-center justify-start">
+                            <div className="font-bold p-4 text-center max-w-[200px] truncate">
+                              {movie.name}
+                            </div>
+                            <div className="text-xs text-neutral-500 flex items-center justify-center text-center -mt-4 px-4 w-full">
+                              {format(movie.date, "PPP")}
+                            </div>
+                          </div>
+                          {movie.genres && movie.genres !== "[]" && (
+                            <div className="flex items-start h-full  justify-center gap-2 px-2 flex-wrap">
+                              {JSON.parse(movie?.genres).map((genre, i) => (
+                                <div
+                                  className="text-xs bg-black text-white px-2 rounded-lg"
+                                  key={i}
+                                >
+                                  {
+                                    genres_ids.find((each) => each.id === genre)
+                                      ?.name
+                                  }
+                                </div>
+                              ))}
                             </div>
                           )}
+                          <div className="font-bold h-full flex items-end  justify-center text-center w-full text-xs">
+                            Onde assistir:
+                          </div>
+                          <div>
+                            {movie.providers && movie.providers !== "[]" ? (
+                              <div className="flex items-center justify-center">
+                                {JSON.parse(movie.providers).map(
+                                  (provider, i) => (
+                                    <img
+                                      src={`https://image.tmdb.org/t/p/w500${provider.logo_path}`}
+                                      alt={provider.provider_name}
+                                      title={provider.provider_name}
+                                      key={i}
+                                      width={50}
+                                      height={50}
+                                      className="rounded-full object-cover"
+                                    />
+                                  )
+                                )}
+                              </div>
+                            ) : (
+                              <div className="w-full h-full flex items-center justify-center text-center font-bold text-neutral-500">
+                                {"Sem opções de provedor"}
+                              </div>
+                            )}
+                          </div>
                         </div>
                       </div>
                     </DrawerTrigger>
@@ -493,7 +548,7 @@ function Home({ rawMovies }) {
             </div>
           ) : (
             <Layout contentMaxWidth={"1080px"}>
-              <GalleryDiv galleryItemsAspectRatio="video">
+              <GalleryDiv galleryItemsAspectRatio="square">
                 {movies
                   .filter((each) => each.watched === true)
                   .map((movie, i) => (
