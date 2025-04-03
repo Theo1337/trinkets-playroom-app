@@ -1665,18 +1665,19 @@ export default function MovieCarousel({ rawMovies }) {
       </Button>
 
       {/* Dialog for desktop */}
-      {isMobile && !isMobile && (
-        <Dialog open={open} onOpenChange={handleDialogClose}>
-          <DialogContent className="max-w-[750px] bg-white">
-            <DialogHeader>
-              <DialogTitle>
-                {isEditMode ? "Editar filme" : "Adicionar filme"}
-              </DialogTitle>
-            </DialogHeader>
-            {isEditMode ? editContent : searchContent}
-          </DialogContent>
-        </Dialog>
-      )}
+      {isMobile ||
+        (!isMobile && (
+          <Dialog open={open} onOpenChange={handleDialogClose}>
+            <DialogContent className="max-w-[750px] bg-white">
+              <DialogHeader>
+                <DialogTitle>
+                  {isEditMode ? "Editar filme" : "Adicionar filme"}
+                </DialogTitle>
+              </DialogHeader>
+              {isEditMode ? editContent : searchContent}
+            </DialogContent>
+          </Dialog>
+        ))}
 
       {/* Drawer for mobile */}
       {false && (
