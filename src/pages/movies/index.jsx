@@ -607,16 +607,19 @@ export default function MovieCarousel({ rawMovies }) {
                           : "Sem data"}
                       </p>
                       <div className="flex flex-wrap gap-1 mt-1">
-                        {movie.genre_ids.slice(0, 2).map((genre) => (
+                        {movie.genre_ids?.slice(0, 2).map((genre) => (
                           <Badge
                             key={genre}
                             variant="outline"
                             className="text-[10px] px-1 py-0 h-4"
                           >
-                            {genres_ids.find((each) => each.id === genre)?.name}
+                            {
+                              genres_ids?.find((each) => each.id === genre)
+                                ?.name
+                            }
                           </Badge>
                         ))}
-                        {movie.genre_ids.length > 2 && (
+                        {movie.genre_ids?.length > 2 && (
                           <span className="text-[10px] text-muted-foreground">
                             +{movie.genre_ids.length - 2}
                           </span>
@@ -872,7 +875,7 @@ export default function MovieCarousel({ rawMovies }) {
                           </p>
                         )}
                         <div className="flex flex-wrap gap-1 mt-1">
-                          {movie.genre_ids.slice(0, 2).map((genre) => (
+                          {movie.genre_ids?.slice(0, 2).map((genre) => (
                             <Badge
                               key={genre}
                               variant="outline"
@@ -884,7 +887,7 @@ export default function MovieCarousel({ rawMovies }) {
                               }
                             </Badge>
                           ))}
-                          {movie.genre_ids.length > 2 && (
+                          {movie.genre_ids?.length > 2 && (
                             <span className="text-[10px] text-muted-foreground">
                               +{movie.genre_ids.length - 2}
                             </span>
