@@ -818,7 +818,7 @@ export default function MovieCarousel({ rawMovies }) {
             </div>
           </div>
         </div>
-        <div className="md:overflow-y-auto md:mt-2 md:max-h-[450px] md:pr-4">
+        <div className="overflow-y-auto md:mt-2 md:max-h-[450px] md:pr-4">
           {searchQuery.length > 0 && (
             <div className="space-y-4 mt-2">
               <h3 className="text-sm font-medium">Resultados</h3>
@@ -1665,7 +1665,7 @@ export default function MovieCarousel({ rawMovies }) {
       </Button>
 
       {/* Dialog for desktop */}
-      {!isMobile && (
+      {isMobile && !isMobile && (
         <Dialog open={open} onOpenChange={handleDialogClose}>
           <DialogContent className="max-w-[750px] bg-white">
             <DialogHeader>
@@ -1679,7 +1679,7 @@ export default function MovieCarousel({ rawMovies }) {
       )}
 
       {/* Drawer for mobile */}
-      {isMobile && (
+      {false && (
         <Drawer open={open} onOpenChange={handleDialogClose}>
           <DrawerContent className="bg-white outline-none border-none">
             <DrawerHeader className="border-b">
