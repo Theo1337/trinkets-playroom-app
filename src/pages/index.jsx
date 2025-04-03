@@ -123,6 +123,16 @@ function Home({ rawQuotes }) {
       ...prevConfigs,
       users: users.data,
     }));
+
+    const user = JSON.parse(localStorage.getItem("user"));
+    const savedUser = users.data.find((u) => u.id === user.id);
+
+    if (user.avatar !== savedUser.avatar || user.name !== savedUser.name) {
+      localStorage.setItem(
+        "user",
+        JSON.stringify(savedUser ? savedUser : user)
+      );
+    }
   };
 
   useEffect(() => {
@@ -144,8 +154,6 @@ function Home({ rawQuotes }) {
       setOpen(false);
     }
   }, [configs.user]);
-
-  useEffect(() => {}, [loading]);
 
   return (
     <div>

@@ -3,6 +3,7 @@ export default async function handler(req, res) {
     const body = {
       name: req.query.name,
       year: req.query.year,
+      type: req.query.type,
     };
 
     if (!body.name) {
@@ -10,7 +11,7 @@ export default async function handler(req, res) {
     }
 
     const movies = fetch(
-      `https://api.themoviedb.org/3/search/movie?query=${body.name}&primary_release_year=${body.year}&language=pt-BR`,
+      `https://api.themoviedb.org/3/search/${body.type}?query=${body.name}&primary_release_year=${body.year}&language=pt-BR`,
       {
         method: "GET",
         headers: {

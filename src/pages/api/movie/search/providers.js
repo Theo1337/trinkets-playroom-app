@@ -2,6 +2,7 @@ export default async function handler(req, res) {
   if (req.method === "GET") {
     const body = {
       id: req.query.id,
+      type: req.query.type,
     };
 
     if (!body.id) {
@@ -10,7 +11,7 @@ export default async function handler(req, res) {
 
     try {
       const response = await fetch(
-        `https://api.themoviedb.org/3/movie/${body.id}/watch/providers`,
+        `https://api.themoviedb.org/3/${body.type}/${body.id}/watch/providers`,
         {
           method: "GET",
           headers: {
