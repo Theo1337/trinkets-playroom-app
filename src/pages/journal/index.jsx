@@ -98,8 +98,6 @@ function Home({ rawPages }) {
   }, [configs.loggedIn, configs.pickedDate, configs.saved]);
 
   const saveItem = (e) => {
-    console.log(e);
-
     if (e.saved) {
       api
         .put(`/journals/${e.id}`, {
@@ -426,16 +424,6 @@ function Home({ rawPages }) {
                           : currentPage;
 
                         setCurrentPage(page);
-
-                        console.log(
-                          pages
-                            .filter((each) => each.userId === configs.user)
-                            .filter(
-                              (each) =>
-                                format(each.date, "yyyy-MM-dd") ==
-                                format(e, "yyyy-MM-dd")
-                            )[0]
-                        );
 
                         setConfigs({
                           ...configs,

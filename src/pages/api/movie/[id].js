@@ -14,8 +14,6 @@ export default async function handler(req, res) {
   } else if (req.method === "PUT") {
     const { body } = req;
 
-    console.log(body);
-
     if (!body.name) {
       return res.status(400).json({ error: "Name not set" });
     }

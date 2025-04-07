@@ -128,7 +128,6 @@ function Home({ rawMovies }) {
       setLoading(true);
 
       if (configs.type === "edit") {
-        console.log(editedMovie);
         if (editedMovie === false) return setTimeout(() => resetState(), 1000);
 
         api

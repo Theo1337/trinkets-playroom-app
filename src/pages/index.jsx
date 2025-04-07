@@ -125,6 +125,8 @@ function Home({ rawQuotes }) {
     }));
 
     const user = JSON.parse(localStorage.getItem("user"));
+    if (!user) return;
+
     const savedUser = users.data.find((u) => u.id === user.id);
 
     if (user.avatar !== savedUser.avatar || user.name !== savedUser.name) {

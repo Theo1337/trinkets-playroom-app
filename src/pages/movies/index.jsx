@@ -158,10 +158,6 @@ export default function MovieCarousel({ rawMovies }) {
       if (filterByUser && movie.addedBy !== filterByUser) {
         return false;
       }
-      // Filter by date
-      if (filterByDate && movie.dateAdded !== format(filterByDate, "PPP")) {
-        return false;
-      }
       return true;
     })
     .sort((a, b) => {
@@ -411,6 +407,7 @@ export default function MovieCarousel({ rawMovies }) {
             )
           );
           // Reset form
+          setSearchType("movie");
           setSearchQuery("");
           setSelectedMovie(null);
           setIsWatched(false);
@@ -439,6 +436,7 @@ export default function MovieCarousel({ rawMovies }) {
           setOpen(false);
           //   Reset form
           setSearchQuery("");
+          setSearchType("movie");
           setSelectedMovie(null);
           setIsWatched(false);
           setDateWatched(new Date());
@@ -456,6 +454,7 @@ export default function MovieCarousel({ rawMovies }) {
       setOpen(false);
       // Reset form
       setSearchQuery("");
+      setSearchType("movie");
       setSelectedMovie(null);
       setIsWatched(false);
       setDateWatched(new Date());
@@ -469,6 +468,7 @@ export default function MovieCarousel({ rawMovies }) {
   const handleDialogClose = (open) => {
     setOpen(open);
     if (!open) {
+      setSearchType("movie");
       setSearchQuery("");
       setSelectedMovie(null);
       setIsWatched(false);
@@ -502,14 +502,16 @@ export default function MovieCarousel({ rawMovies }) {
 
   // Content for edit mode
   const editContent = (
-    <div className="space-y-6 pt-4 max-w-[360px] md:max-w-[700px]">
+    <div className="space-y-6 pt-4 max-w-[375px] md:max-w-[700px]">
       {/* Search input for edit mode - now searches for new movies */}
       <div className="relative w-full flex items-center gap-2 md:gap-0 justify-center">
         <div className="w-11/12 md:w-11/12">
           <Search className="absolute left-2.5 top-3 h-4 w-4 text-muted-foreground" />
           <Input
             type="search"
-            placeholder="Procurar filme..."
+            placeholder={`Procurar ${
+              searchType === "movie" ? "filme" : "série"
+            }...`}
             className="pl-8 w-full -mt-[1.0rem]"
             value={editSearchQuery}
             onChange={(e) => {
@@ -702,7 +704,9 @@ export default function MovieCarousel({ rawMovies }) {
         )}
         {editingMovie && (
           <div className="space-y-4 border-t pt-4 mt-2">
-            <h3 className="text-sm font-medium">Status do filme</h3>
+            <h3 className="text-sm font-medium">
+              Status {searchType === "movie" ? "do filme" : "da série"}
+            </h3>
             <div className="flex items-center gap-2">
               <Button
                 variant={isWatched ? "default" : "outline"}
@@ -762,7 +766,9 @@ export default function MovieCarousel({ rawMovies }) {
             }}
           >
             <Trash2 className="h-4 w-4" />
-            <span className="sr-only">Apagar filme</span>
+            <span className="sr-only">
+              Apagar {searchType === "movie" ? "filme" : "série"}
+            </span>
           </Button>
         )}
       </div>
@@ -778,7 +784,9 @@ export default function MovieCarousel({ rawMovies }) {
             <Search className="absolute left-2.5 top-3 h-4 w-4 text-muted-foreground" />
             <Input
               type="search"
-              placeholder="Procurar filme..."
+              placeholder={`Procurar ${
+                searchType === "movie" ? "filme" : "série"
+              }...`}
               className="pl-8 w-full -mt-[1.0rem]"
               value={searchQuery}
               onChange={(e) => {
@@ -954,7 +962,7 @@ export default function MovieCarousel({ rawMovies }) {
         </div>
       </div>
       <Button variant="movie" onClick={handleAddMovie} className="w-full">
-        Adcionar filme
+        Adcionar {searchType === "movie" ? "filme" : "série"}
       </Button>
     </div>
   );
@@ -1117,7 +1125,7 @@ export default function MovieCarousel({ rawMovies }) {
                     Adcionado por: {JSON.parse(filterByUser).name}
                     <X
                       className="h-3 w-3 ml-1 cursor-pointer"
-                      onClick={() => handleFilterChange("user", filterByUser)}
+                      onClick={() => ("user", filterByUser)}
                     />
                   </Badge>
                 )}
@@ -1249,7 +1257,7 @@ export default function MovieCarousel({ rawMovies }) {
                                   genres: movie.genres,
                                   date: new Date(movie.date),
                                   watched: !movie.watched,
-                                  dateWatched: new Date(movie.dateWatched),
+                                  dateWatched: new Date(),
                                   type: movie.type,
                                   addedBy: movie.addedBy,
                                 })
@@ -1670,7 +1678,9 @@ export default function MovieCarousel({ rawMovies }) {
           <DialogContent className="max-w-[750px] bg-white">
             <DialogHeader>
               <DialogTitle>
-                {isEditMode ? "Editar filme" : "Adicionar filme"}
+                {isEditMode
+                  ? `Editar ${searchType === "movie" ? "filme" : "série"}`
+                  : `Adicionar ${searchType === "movie" ? "filme" : "série"}`}
               </DialogTitle>
             </DialogHeader>
             {isEditMode ? editContent : searchContent}
@@ -1684,7 +1694,9 @@ export default function MovieCarousel({ rawMovies }) {
           <DrawerContent className="bg-white outline-none border-none">
             <DrawerHeader className="border-b">
               <DrawerTitle>
-                {isEditMode ? "Editar filme" : "Adicionar filme"}
+                {isEditMode
+                  ? `Editar ${searchType === "movie" ? "filme" : "série"}`
+                  : `Adicionar ${searchType === "movie" ? "filme" : "série"}`}
               </DrawerTitle>
               <DrawerClose className="absolute right-4 top-4">
                 <X className="h-4 w-4" />
