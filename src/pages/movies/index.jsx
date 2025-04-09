@@ -536,9 +536,16 @@ export default function MovieCarousel({ rawMovies }) {
           <Button
             size="icon"
             variant="outline"
-            onClick={() =>
-              setSearchType(searchType === "movie" ? "tv" : "movie")
-            }
+            onClick={() => {
+              const name = editSearchQuery;
+              const yearMatch = name.match(/\((\d{4})\)/);
+              setSearchType(searchType === "movie" ? "tv" : "movie");
+
+              searchMovie({
+                name: editSearchQuery,
+                year: yearMatch ? yearMatch[1] : undefined,
+              });
+            }}
           >
             {searchType === "movie" ? (
               <Clapperboard className="h-4 w-4" />
@@ -811,9 +818,16 @@ export default function MovieCarousel({ rawMovies }) {
             <Button
               size="icon"
               variant="outline"
-              onClick={() =>
-                setSearchType(searchType === "movie" ? "tv" : "movie")
-              }
+              onClick={() => {
+                const name = editSearchQuery;
+                const yearMatch = name.match(/\((\d{4})\)/);
+                setSearchType(searchType === "movie" ? "tv" : "movie");
+
+                searchMovie({
+                  name: editSearchQuery,
+                  year: yearMatch ? yearMatch[1] : undefined,
+                });
+              }}
             >
               {searchType === "movie" ? (
                 <Clapperboard className="h-4 w-4" />
