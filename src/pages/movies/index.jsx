@@ -542,7 +542,7 @@ export default function MovieCarousel({ rawMovies }) {
               setSearchType(searchType === "movie" ? "tv" : "movie");
 
               searchMovie({
-                name: editSearchQuery,
+                name: name,
                 year: yearMatch ? yearMatch[1] : undefined,
               });
             }}
@@ -819,12 +819,12 @@ export default function MovieCarousel({ rawMovies }) {
               size="icon"
               variant="outline"
               onClick={() => {
-                const name = editSearchQuery;
+                const name = searchQuery;
                 const yearMatch = name.match(/\((\d{4})\)/);
                 setSearchType(searchType === "movie" ? "tv" : "movie");
 
                 searchMovie({
-                  name: editSearchQuery,
+                  name: name,
                   year: yearMatch ? yearMatch[1] : undefined,
                 });
               }}
