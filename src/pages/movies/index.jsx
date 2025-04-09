@@ -536,10 +536,12 @@ export default function MovieCarousel({ rawMovies }) {
           <Button
             size="icon"
             variant="outline"
+            onMouseDown={() => {
+              setSearchType(searchType === "movie" ? "tv" : "movie");
+            }}
             onClick={() => {
               const name = editSearchQuery;
               const yearMatch = name.match(/\((\d{4})\)/);
-              setSearchType(searchType === "movie" ? "tv" : "movie");
 
               searchMovie({
                 name: name,
@@ -818,10 +820,12 @@ export default function MovieCarousel({ rawMovies }) {
             <Button
               size="icon"
               variant="outline"
+              onMouseDown={() => {
+                setSearchType(searchType === "movie" ? "tv" : "movie");
+              }}
               onClick={() => {
                 const name = searchQuery;
                 const yearMatch = name.match(/\((\d{4})\)/);
-                setSearchType(searchType === "movie" ? "tv" : "movie");
 
                 searchMovie({
                   name: name,
