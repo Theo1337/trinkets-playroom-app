@@ -539,6 +539,9 @@ export default function MovieCarousel({ rawMovies }) {
             onMouseDown={() => {
               setSearchType(searchType === "movie" ? "tv" : "movie");
             }}
+            onTouchStart={() => {
+              setSearchType(searchType === "movie" ? "tv" : "movie");
+            }}
             onClick={() => {
               const name = editSearchQuery;
               const yearMatch = name.match(/\((\d{4})\)/);
@@ -821,6 +824,9 @@ export default function MovieCarousel({ rawMovies }) {
               size="icon"
               variant="outline"
               onMouseDown={() => {
+                setSearchType(searchType === "movie" ? "tv" : "movie");
+              }}
+              onTouchStart={() => {
                 setSearchType(searchType === "movie" ? "tv" : "movie");
               }}
               onClick={() => {
@@ -1716,10 +1722,6 @@ export default function MovieCarousel({ rawMovies }) {
                   ? `Editar ${searchType === "movie" ? "filme" : "série"}`
                   : `Adicionar ${searchType === "movie" ? "filme" : "série"}`}
               </DrawerTitle>
-              <DrawerClose className="absolute right-4 top-4">
-                <X className="h-4 w-4" />
-                <span className="sr-only">Close</span>
-              </DrawerClose>
             </DrawerHeader>
             <div className="px-4 pb-4">
               {isEditMode ? editContent : searchContent}
