@@ -28,6 +28,7 @@ export default async function handler(req, res) {
         "Netflix",
         "Amazon Prime Video",
         "Disney Plus",
+        "Crunchyroll",
       ];
 
       const filteredProviders = data.filter((each) =>
