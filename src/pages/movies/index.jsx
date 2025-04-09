@@ -502,7 +502,7 @@ export default function MovieCarousel({ rawMovies }) {
 
   // Content for edit mode
   const editContent = (
-    <div className="space-y-6 pt-4 max-w-[375px] md:max-w-[700px]">
+    <div className="space-y-6 pt-4 max-w-screen md:max-w-[700px]">
       {/* Search input for edit mode - now searches for new movies */}
       <div className="relative w-full flex items-center gap-2 md:gap-0 justify-center">
         <div className="w-11/12 md:w-11/12">
@@ -786,7 +786,7 @@ export default function MovieCarousel({ rawMovies }) {
 
   // Content for both dialog and drawer
   const searchContent = (
-    <div className="space-y-6 pt-4 max-w-[360px] md:max-w-[700px]">
+    <div className="space-y-6 pt-4 max-w-screen md:max-w-[700px]">
       <div>
         <div className="relative w-full flex items-center md:gap-0 gap-2 justify-center">
           <div className="w-11/12">
@@ -1709,7 +1709,7 @@ export default function MovieCarousel({ rawMovies }) {
       {/* Drawer for mobile */}
       {isMobile && (
         <Drawer open={open} onOpenChange={handleDialogClose}>
-          <DrawerContent className="bg-white max-w-[750px] outline-none border-none min-h-min">
+          <DrawerContent className="bg-white outline-none border-none min-h-min">
             <DrawerHeader className="border-b">
               <DrawerTitle>
                 {isEditMode
