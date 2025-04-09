@@ -360,7 +360,7 @@ export default function MovieCarousel({ rawMovies }) {
           image: `https://image.tmdb.org/t/p/w500${movie.poster_path}`,
           genres: movie.genre_ids,
           providers: res.data.providers,
-          date: new Date(movie.release_date),
+          date: new Date(),
           watched: movie.watched || isWatched,
           dateWatched: new Date(movie.dateWatched || new Date()),
           type: searchType,
@@ -374,7 +374,7 @@ export default function MovieCarousel({ rawMovies }) {
             image: `https://image.tmdb.org/t/p/w500${movie.poster_path}`,
             genres: JSON.stringify(movie.genre_ids),
             providers: JSON.stringify(res.data.providers),
-            date: new Date(movie.release_date),
+            date: new Date(),
             watched: movie.watched,
             dateWatched: new Date(movie.dateWatched || new Date()),
             type: searchType,
@@ -1691,7 +1691,7 @@ export default function MovieCarousel({ rawMovies }) {
       </Button>
 
       {/* Dialog for desktop */}
-      {true && (
+      {!isMobile && (
         <Dialog open={open} onOpenChange={handleDialogClose}>
           <DialogContent className="max-w-[750px] bg-white">
             <DialogHeader>
@@ -1707,9 +1707,9 @@ export default function MovieCarousel({ rawMovies }) {
       )}
 
       {/* Drawer for mobile */}
-      {false && (
+      {isMobile && (
         <Drawer open={open} onOpenChange={handleDialogClose}>
-          <DrawerContent className="bg-white outline-none border-none">
+          <DrawerContent className="bg-white outline-none border-none min-h-min">
             <DrawerHeader className="border-b">
               <DrawerTitle>
                 {isEditMode
