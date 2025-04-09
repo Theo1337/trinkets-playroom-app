@@ -220,12 +220,12 @@ export default function MovieCarousel({ rawMovies }) {
   ];
 
   // Get search results for both modes
-  const searchMovie = ({ name, year }) => {
+  const searchMovie = ({ name, year, type }) => {
     api
       .get(
         `/movie/search?name=${name
           .replace(/\((\d{4})\)/, "")
-          .toLowerCase()}&year=${year}&type=${searchType}`
+          .toLowerCase()}&year=${year}&type=${type ? type : searchType}`
       )
       .then((res) => {
         setSearchResults(res.data);
@@ -536,12 +536,6 @@ export default function MovieCarousel({ rawMovies }) {
           <Button
             size="icon"
             variant="outline"
-            onMouseDown={() => {
-              setSearchType(searchType === "movie" ? "tv" : "movie");
-            }}
-            onTouchStart={() => {
-              setSearchType(searchType === "movie" ? "tv" : "movie");
-            }}
             onClick={() => {
               const name = editSearchQuery;
               const yearMatch = name.match(/\((\d{4})\)/);
@@ -549,7 +543,10 @@ export default function MovieCarousel({ rawMovies }) {
               searchMovie({
                 name: name,
                 year: yearMatch ? yearMatch[1] : undefined,
+                type: searchType === "movie" ? "tv" : "movie",
               });
+
+              setSearchType(searchType === "movie" ? "tv" : "movie");
             }}
           >
             {searchType === "movie" ? (
@@ -823,12 +820,6 @@ export default function MovieCarousel({ rawMovies }) {
             <Button
               size="icon"
               variant="outline"
-              onMouseDown={() => {
-                setSearchType(searchType === "movie" ? "tv" : "movie");
-              }}
-              onTouchStart={() => {
-                setSearchType(searchType === "movie" ? "tv" : "movie");
-              }}
               onClick={() => {
                 const name = searchQuery;
                 const yearMatch = name.match(/\((\d{4})\)/);
@@ -836,7 +827,10 @@ export default function MovieCarousel({ rawMovies }) {
                 searchMovie({
                   name: name,
                   year: yearMatch ? yearMatch[1] : undefined,
+                  type: searchType === "movie" ? "tv" : "movie",
                 });
+
+                setSearchType(searchType === "movie" ? "tv" : "movie");
               }}
             >
               {searchType === "movie" ? (
@@ -1715,7 +1709,7 @@ export default function MovieCarousel({ rawMovies }) {
       {/* Drawer for mobile */}
       {isMobile && (
         <Drawer open={open} onOpenChange={handleDialogClose}>
-          <DrawerContent className="bg-white outline-none border-none min-h-min">
+          <DrawerContent className="bg-white max-w-[750px] outline-none border-none min-h-min">
             <DrawerHeader className="border-b">
               <DrawerTitle>
                 {isEditMode
