@@ -348,47 +348,18 @@ export default function Home({ rawEvents }) {
         </PopoverTrigger>
         <PopoverContent
           className="w-auto p-0"
-          align="start"
-          sideOffset={5}
+          align={isMobile ? "center" : "start"}
+          sideOffset={isMobile ? 5 : -50}
           style={{ zIndex: isMobile ? 100 : 50 }}
         >
           <div className="p-3">
-            <div className="flex items-center justify-between mb-2 px-1">
-              <div className="text-sm font-medium text-emerald-900">
-                {format(popoverMonth, "MMMM", { locale: ptBR })}
-              </div>
-              <Select
-                value={popoverYear.toString()}
-                onValueChange={handleYearChange}
-              >
-                <SelectTrigger className="w-[70px] h-7 text-xs border-emerald-200">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  {years.map((year) => (
-                    <SelectItem key={year} value={year.toString()}>
-                      {year}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-
             <Calendar
               mode="single"
               selected={selectedDate}
               onSelect={(e) => {
                 setSelectedDate(e);
                 onChange(e);
-                if (e !== undefined) {
-                  setPopoverMonth(e);
-                  setPopoverYear(getYear(e));
-                }
               }}
-              month={popoverMonth}
-              onPreviousClick={() =>
-                setPopoverMonth(subMonths(popoverMonth, 1))
-              }
             />
 
             <div className="flex justify-end gap-2 mt-3 px-1">
