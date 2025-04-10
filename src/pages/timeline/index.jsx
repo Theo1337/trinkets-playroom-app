@@ -650,7 +650,7 @@ export default function Home({ rawEvents }) {
                           ? "Nenhuma"
                           : validEntries.length
                       } ${validEntries.length <= 1 ? "entrada" : "entradas"} ${
-                        validEntries.length == 0 && "para este dia"
+                        validEntries.length == 0 ? "para este dia" : ""
                       }`;
                     })()}
               </CardDescription>
