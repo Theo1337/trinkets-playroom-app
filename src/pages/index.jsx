@@ -66,13 +66,13 @@ export const getServerSideProps = async () => {
 function Home({ rawQuotes }) {
   const items = [
     {
-      name: "Contador de coisas",
+      name: "Contador",
       icon: <Timer className="group-hover:text-emerald-500 transition" />,
       maintence: false,
       url: "/counter",
     },
     {
-      name: "Lista de filmes",
+      name: "Lista",
       icon: <Clapperboard className="group-hover:text-gray-500 transition" />,
       maintence: false,
       url: "/movies",

@@ -40,10 +40,10 @@ model Counters {
 
 model Events {
     id Int @id @default(autoincrement())
-    title String
-    text String
+    title String?
+    description String?
     date String
-    formattedDate String
+    heart Boolean @default(false)
     createdAt DateTime @db.Timestamp(0)
 }
 

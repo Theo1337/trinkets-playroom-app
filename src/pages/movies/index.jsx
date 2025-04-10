@@ -172,11 +172,22 @@ export default function MovieCarousel({ rawMovies }) {
   const allGenres = Array.from(
     new Set(allMovies.flatMap((movie) => JSON.parse(movie.genres)))
   );
-  const allUsers = Array.from(new Set(allMovies.map((movie) => movie.addedBy)));
+  const allUsers = Array.from(
+    new Set(allMovies.map((movie) => JSON.parse(movie.addedBy).id))
+  ).map(
+    (id) =>
+      users.find((user) => user.id === id) || {
+        id,
+        name: "Unknown",
+        avatar: null,
+      }
+  );
 
   // Count movies by user
   const moviesByUser = allUsers.reduce((acc, user) => {
-    acc[user] = allMovies.filter((movie) => movie.addedBy === user).length;
+    acc[user.id] = allMovies.filter(
+      (movie) => JSON.parse(movie.addedBy).id === user.id
+    ).length;
     return acc;
   }, {});
 
@@ -1067,30 +1078,27 @@ export default function MovieCarousel({ rawMovies }) {
                         <div className="flex gap-2 items-center">
                           <Image
                             src={`https://cdn.discordapp.com/avatars/${
-                              JSON.parse(user).id
+                              user.id
                             }/${
                               users.length > 0
-                                ? users.find(
-                                    (u) => u.id === JSON.parse(user).id
-                                  ).avatar
-                                : JSON.parse(user).avatar
+                                ? users.find((u) => u.id === user.id).avatar
+                                : user.avatar
                             }.png`}
                             width={512}
                             height={512}
                             className="w-8 h-8 rounded-full"
-                            alt={JSON.parse(user).name}
+                            alt={user.name}
                           />
                           <div className="text-xs ">
                             {users.length > 0
-                              ? users.find((u) => u.id === JSON.parse(user).id)
-                                  .name
-                              : JSON.parse(user).name}
+                              ? users.find((u) => u.id === user.id).name
+                              : user.name}
                           </div>
                         </div>
                       ) : (
                         "Sem nome"
-                      )}{" "}
-                      ({moviesByUser[user]})
+                      )}
+                      ({moviesByUser[user.id]})
                       {filterByUser === user && (
                         <Check className="ml-auto h-4 w-4" />
                       )}
