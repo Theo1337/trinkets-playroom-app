@@ -31,7 +31,7 @@ import { OrbitProgress } from "react-loading-indicators";
 
 export default function CalendarPage() {
   const router = useRouter();
-  const [selectedDate, setSelectedDate] = useState(new Date());
+  const [selectedDate, setSelectedDate] = useState(null);
   const [userId, setUserId] = useState(null);
   const [entries, setEntries] = useState([]);
   const [passwordDialogOpen, setPasswordDialogOpen] = useState(false);
@@ -120,6 +120,7 @@ export default function CalendarPage() {
       setError("");
       setPasswordDialogOpen(false);
       navigateToJournal(selectedEntry.date);
+      setSelectedDate(null);
     } else {
       setError("Senha incorreta");
     }
@@ -231,26 +232,17 @@ export default function CalendarPage() {
                 <span className="text-sm">Protegido por Senha</span>
               </div>
             </div>
-
-            <Button
-              className="mt-6 w-full bg-red-400 hover:bg-red-400/80"
-              onClick={() => {
-                if (selectedDate) {
-                  const formattedDate = formatDateToYYYYMMDD(selectedDate);
-                  if (formattedDate) {
-                    navigateToJournal(formattedDate);
-                  }
-                }
-              }}
-            >
-              <Plus className="mr-2 h-4 w-4" />
-              Criar Nova Entrada
-            </Button>
           </CardContent>
         )}
       </Card>
 
-      <Dialog open={passwordDialogOpen} onOpenChange={setPasswordDialogOpen}>
+      <Dialog
+        open={passwordDialogOpen}
+        onOpenChange={() => {
+          setPasswordDialogOpen(false);
+          setSelectedDate(null);
+        }}
+      >
         <DialogContent className="bg-white">
           <DialogHeader>
             <DialogTitle>Entrada Protegida por Senha</DialogTitle>
@@ -277,7 +269,10 @@ export default function CalendarPage() {
           <DialogFooter>
             <Button
               variant="outline"
-              onClick={() => setPasswordDialogOpen(false)}
+              onClick={() => {
+                setPasswordDialogOpen(false);
+                setSelectedDate(null);
+              }}
             >
               Cancelar
             </Button>
