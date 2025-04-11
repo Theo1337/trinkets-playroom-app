@@ -43,8 +43,8 @@ export async function saveJournalEntry(entry) {
   }
 }
 
-export async function deleteEntry(entryId) {
+export async function deleteEntry(entry) {
   // Delete an entry by its ID
-  const response = await api.delete(`/journals/${entryId}`);
+  const response = await api.delete(`/journals/${entry.id}`);
   return response.status === 200; // Assuming a 200 status means success
 }

@@ -145,7 +145,7 @@ export default function CalendarPage() {
           {"Diário para anotar seus sentimentos!"}
         </div>
       </div>
-      <Card className="w-full border-red-200 max-w-md -mt-32 ">
+      <Card className="w-full border-red-200 max-w-md -mt-32">
         <CardHeader className="text-center">
           <div className="flex items-center">
             <Button variant="ghost" size="icon" onClick={handleBackToUsers}>

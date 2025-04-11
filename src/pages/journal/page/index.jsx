@@ -219,8 +219,11 @@ export default function JournalPage() {
 
   const handleDelete = async () => {
     if (!userId || !date) return;
+    console.log();
 
-    await deleteEntry(userId, date);
+    await deleteEntry({
+      id: entry.id,
+    });
     setDeleteDialogOpen(false);
 
     // Exibir toast de exclusão
