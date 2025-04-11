@@ -365,7 +365,7 @@ export default function JournalPage() {
         </div>
         {/* Mantendo os componentes de diálogo do shadcn/ui */}
         <Dialog open={passwordDialogOpen} onOpenChange={setPasswordDialogOpen}>
-          <DialogContent>
+          <DialogContent className="bg-white">
             <DialogHeader>
               <DialogTitle>Proteger Entrada com Senha</DialogTitle>
               <DialogDescription>
@@ -400,7 +400,7 @@ export default function JournalPage() {
           </DialogContent>
         </Dialog>
         <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
-          <AlertDialogContent>
+          <AlertDialogContent className="bg-white">
             <AlertDialogHeader>
               <AlertDialogTitle>Tem certeza?</AlertDialogTitle>
               <AlertDialogDescription>

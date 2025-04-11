@@ -44,7 +44,7 @@ export default function UsersPage() {
           {"Diário para anotar seus sentimentos!"}
         </div>
       </div>
-      <Card className="w-full border-red-200 max-w-md -mt-48">
+      <Card className="w-full border-red-200 max-w-md -mt-[125%] md:-mt-48">
         <CardHeader className="text-center">
           <CardTitle className="text-3xl font-bold">
             Selecionar Usuário
