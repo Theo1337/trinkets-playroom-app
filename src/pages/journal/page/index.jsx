@@ -46,6 +46,9 @@ import {
   deleteEntry,
 } from "@/lib/journal-service";
 import styles from "./journal.module.css";
+<Head>
+  <title>Cafofo Estelar - Diário | Usuários</title>
+</Head>;
 
 export default function JournalPage() {
   const router = useRouter();
@@ -196,6 +199,7 @@ export default function JournalPage() {
 
     // Save to database with password protection
     const updatedEntry = await saveJournalEntry({
+      id: entry?.id,
       userId,
       date,
       title,
@@ -239,6 +243,9 @@ export default function JournalPage() {
 
   return (
     <div className="bg-red-50 min-h-screen">
+      <Head>
+        <title>Cafofo Estelar - Diário</title>
+      </Head>
       <div className="flex items-center justify-center flex-col gap-2 pt-12">
         <div className="font-logo text-4xl text-neutral-700 ">Diário</div>
         <div className="text-xs text-neutral-500 uppercase">
@@ -248,7 +255,12 @@ export default function JournalPage() {
       <div className={styles.journalPage}>
         {/* Toast personalizado */}
         {showToast && (
-          <div className={styles.customToast}>
+          <div
+            className={
+              styles.customToast +
+              " top-4 fixed w-[380px] animation-[fadeInSlideDown_0.3s_ease-out]"
+            }
+          >
             <div className={styles.customToastContent}>
               <CheckCircle2 className={styles.toastIcon} />
               <div>
@@ -281,7 +293,12 @@ export default function JournalPage() {
           </div>
         </div>
         <div className={styles.editorContainer}>
-          <div className={styles.editorToolbar}>
+          <div
+            className={
+              styles.editorToolbar +
+              " flex md:justify-start justify-center items-center gap-2"
+            }
+          >
             <button
               className={styles.toolbarButton}
               onClick={() => formatText("bold")}
@@ -332,7 +349,12 @@ export default function JournalPage() {
             >
               <AlignRight size={16} />
             </button>
-            <div className={styles.toolbarActions}>
+            <div
+              className={
+                styles.toolbarActions +
+                " flex gap-2 justify-center my-2 items-center md:my-0 w-full md:w-auto"
+              }
+            >
               <button
                 className={`${styles.actionButton} ${styles.deleteButton}`}
                 onClick={() => setDeleteDialogOpen(true)}

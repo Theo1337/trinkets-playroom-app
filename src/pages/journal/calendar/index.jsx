@@ -25,6 +25,7 @@ import { Label } from "@/components/ui/label";
 import { getEntriesForUser, getEntryByDate } from "@/lib/journal-service";
 import { ptBR } from "date-fns/locale";
 import { isValid } from "date-fns";
+import Head from "next/head";
 
 export default function CalendarPage() {
   const router = useRouter();
@@ -124,6 +125,9 @@ export default function CalendarPage() {
 
   return (
     <div className="mx-auto py-8 grid place-items-center calendar-page h-screen bg-red-50">
+      <Head>
+        <title>Cafofo Estelar - Diário | Calendário</title>
+      </Head>
       <Card className="w-full border-red-200 max-w-md">
         <CardHeader className="text-center">
           <div className="flex items-center">
@@ -213,7 +217,7 @@ export default function CalendarPage() {
       </Card>
 
       <Dialog open={passwordDialogOpen} onOpenChange={setPasswordDialogOpen}>
-        <DialogContent>
+        <DialogContent className="bg-white">
           <DialogHeader>
             <DialogTitle>Entrada Protegida por Senha</DialogTitle>
             <DialogDescription>
