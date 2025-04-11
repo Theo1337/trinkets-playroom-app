@@ -11,7 +11,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, Plus } from "lucide-react";
+import { ArrowLeft, Plus, MoveLeft } from "lucide-react";
 import {
   Dialog,
   DialogContent,
@@ -124,11 +124,28 @@ export default function CalendarPage() {
   };
 
   return (
-    <div className="mx-auto py-8 grid place-items-center calendar-page h-screen bg-red-50">
+    <div className="mx-auto px-4 py-8 grid place-items-center calendar-page h-screen bg-red-50">
+      <div
+        onClick={() => {
+          window.location.href = "/";
+        }}
+        className="flex items-center justify-center absolute top-0 left-0 gap-2 p-4 group cursor-pointer"
+      >
+        <MoveLeft className="text-neutral-500 text-2xl" />
+        <div className="text-xs mt-0.5 text-neutral-500 uppercase group-hover:underline ">
+          voltar
+        </div>
+      </div>
       <Head>
         <title>Cafofo Estelar - Diário | Calendário</title>
       </Head>
-      <Card className="w-full border-red-200 max-w-md">
+      <div className="flex items-center justify-center flex-col gap-2 pt-12">
+        <div className="font-logo text-4xl text-neutral-700 ">Diário</div>
+        <div className="text-xs text-neutral-500 uppercase">
+          {"Diário para anotar seus sentimentos!"}
+        </div>
+      </div>
+      <Card className="w-full border-red-200 max-w-md -mt-32 ">
         <CardHeader className="text-center">
           <div className="flex items-center">
             <Button variant="ghost" size="icon" onClick={handleBackToUsers}>

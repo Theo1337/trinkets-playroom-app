@@ -18,6 +18,7 @@ import {
   ArrowLeft,
   Trash2,
   CheckCircle2,
+  MoveLeft,
 } from "lucide-react";
 import {
   Dialog,
@@ -241,6 +242,17 @@ export default function JournalPage() {
 
   return (
     <div className="bg-red-50 min-h-screen">
+      <div
+        onClick={() => {
+          window.location.href = "/";
+        }}
+        className="flex items-center justify-center absolute top-0 left-0 gap-2 p-4 group cursor-pointer"
+      >
+        <MoveLeft className="text-neutral-500 text-2xl" />
+        <div className="text-xs mt-0.5 text-neutral-500 uppercase group-hover:underline ">
+          voltar
+        </div>
+      </div>
       <Head>
         <title>Cafofo Estelar - Diário</title>
       </Head>
