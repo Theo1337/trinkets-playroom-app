@@ -46,9 +46,7 @@ import {
   deleteEntry,
 } from "@/lib/journal-service";
 import styles from "./journal.module.css";
-<Head>
-  <title>Cafofo Estelar - Diário | Usuários</title>
-</Head>;
+import Head from "next/head";
 
 export default function JournalPage() {
   const router = useRouter();
