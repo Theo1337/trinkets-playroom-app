@@ -810,14 +810,16 @@ export default function Home({ rawEvents }) {
             </Button>
           )}
           <Button
-            onClick={() => {
+            type="button"
+            onClick={(e) => {
+              e.stopPropagation();
+              handleSubmit();
+
               setEditingItemValues({
                 title: formTitleValue,
                 description: formDescriptionValue,
                 date: formDateValue,
               });
-
-              handleSubmit();
             }}
             className="bg-emerald-600 hover:bg-emerald-700"
           >
@@ -947,7 +949,6 @@ export default function Home({ rawEvents }) {
                           ...e,
                         });
                       }
-
                       setFormDate(e.date ? e.date : formDate);
                       setFormTitle(e.title ? e.title : formTitle);
                       setFormDescription(

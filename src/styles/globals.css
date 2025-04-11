@@ -115,17 +115,16 @@ body {
   background: #585858;
 }
 
-.wrap-quote {
-  word-wrap: break-word;
-  overflow: hidden;
+.calendar-page .calendar-has-entry {
+  background-color: rgba(220, 38, 38, 0.2);
 }
 
-.day_selected_after::after {
-  content: "";
-  width: 5px;
-  height: 5px;
-  position: absolute;
-  background-color: white;
-  border-radius: 50%;
-  bottom: 5px;
+.calendar-page .calendar-protected {
+  border: 2px solid #ef4444;
+}
+
+.calendar-page .calendar-today {
+  background-color: rgba(254, 226, 226, 0.5);
+  font-weight: bold;
+  color: #dc2626;
 }

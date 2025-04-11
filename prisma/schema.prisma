@@ -49,9 +49,9 @@ model Events {
 
 model Journals {
     id Int @id @default(autoincrement())
-    title String
-    text String?
-    passwordProtected Boolean @default(false)
+    title String?
+    content String?
+    isPasswordProtected Boolean @default(false)
     password String?
     userId String
     date String
