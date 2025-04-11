@@ -155,7 +155,8 @@ export default function MovieCarousel({ rawMovies }) {
         return false;
       }
       // Filter by user
-      if (filterByUser && movie.addedBy !== filterByUser) {
+      console.log(filterByUser, movie.addedBy);
+      if (filterByUser && JSON.parse(movie.addedBy).id !== filterByUser) {
         return false;
       }
       return true;
@@ -1072,7 +1073,7 @@ export default function MovieCarousel({ rawMovies }) {
                     <DropdownMenuItem
                       key={user}
                       className={cn(filterByUser === user && "bg-muted")}
-                      onClick={() => handleFilterChange("user", user)}
+                      onClick={() => handleFilterChange("user", user.id)}
                     >
                       {user ? (
                         <div className="flex gap-2 items-center">
