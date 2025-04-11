@@ -85,8 +85,6 @@ function Home({ rawCounters }) {
   const changeCounter = async ({ type, counter }) => {
     if (configs.timeout) clearTimeout(configs.timeout);
     const timeToSave = setTimeout(() => {
-      console.log("Updating database");
-
       api
         .put(`/counters/${counter.id}`, {
           ...counter,

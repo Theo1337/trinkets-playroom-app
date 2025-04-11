@@ -227,7 +227,6 @@ function Home({ rawEvents }) {
             <div className="w-full">
               <Timeline
                 onSelectItem={(e) => {
-                  console.log("Editing item");
                   setConfigs({
                     ...configs,
                     type: "edit",

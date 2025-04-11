@@ -219,8 +219,6 @@ export default function JournalPage() {
 
   const handleDelete = async () => {
     if (!userId || !date) return;
-    console.log();
-
     await deleteEntry({
       id: entry.id,
     });
@@ -253,7 +251,7 @@ export default function JournalPage() {
       >
         <MoveLeft className="text-neutral-500 text-2xl" />
         <div className="text-xs mt-0.5 text-neutral-500 uppercase group-hover:underline ">
-          voltar
+          início
         </div>
       </div>
       <Head>

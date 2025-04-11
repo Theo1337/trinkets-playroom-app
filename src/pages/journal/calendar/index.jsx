@@ -27,6 +27,8 @@ import { ptBR } from "date-fns/locale";
 import { isValid } from "date-fns";
 import Head from "next/head";
 
+import { OrbitProgress } from "react-loading-indicators";
+
 export default function CalendarPage() {
   const router = useRouter();
   const [selectedDate, setSelectedDate] = useState(new Date());
@@ -36,6 +38,7 @@ export default function CalendarPage() {
   const [password, setPassword] = useState("");
   const [selectedEntry, setSelectedEntry] = useState(null);
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     // Get selected user from localStorage
@@ -52,6 +55,9 @@ export default function CalendarPage() {
     const loadEntries = async () => {
       const userEntries = await getEntriesForUser(id);
       setEntries(userEntries);
+      setTimeout(() => {
+        setLoading(false);
+      }, 500);
     };
 
     loadEntries();
@@ -124,7 +130,7 @@ export default function CalendarPage() {
   };
 
   return (
-    <div className="mx-auto px-4 py-8 grid place-items-center calendar-page h-screen bg-red-50">
+    <div className="mx-auto px-4 py-8 h-screen flex items-center justify-center flex-col gap-4 calendar-page  bg-red-50">
       <div
         onClick={() => {
           window.location.href = "/";
@@ -133,19 +139,19 @@ export default function CalendarPage() {
       >
         <MoveLeft className="text-neutral-500 text-2xl" />
         <div className="text-xs mt-0.5 text-neutral-500 uppercase group-hover:underline ">
-          voltar
+          início
         </div>
       </div>
       <Head>
         <title>Cafofo Estelar - Diário | Calendário</title>
       </Head>
-      <div className="flex items-center justify-center flex-col gap-2 pt-12">
+      <div className="flex items-center justify-center flex-col gap-2 ">
         <div className="font-logo text-4xl text-neutral-700 ">Diário</div>
         <div className="text-xs text-neutral-500 uppercase">
           {"Diário para anotar seus sentimentos!"}
         </div>
       </div>
-      <Card className="w-full border-red-200 max-w-md -mt-32">
+      <Card className="w-full border-red-200 max-w-md">
         <CardHeader className="text-center">
           <div className="flex items-center">
             <Button variant="ghost" size="icon" onClick={handleBackToUsers}>
@@ -159,78 +165,89 @@ export default function CalendarPage() {
             Escolha uma data para ver ou criar uma entrada no diário
           </CardDescription>
         </CardHeader>
-        <CardContent className="flex flex-col items-center">
-          <Calendar
-            mode="single"
-            selected={selectedDate}
-            onSelect={handleDateSelect}
-            className="rounded-md border border-red-200"
-            locale={ptBR}
-            modifiersClassNames={{
-              selected:
-                "bg-red-50 font-bold text-red-600 hover:bg-red-200 rounded-lg",
-              hasEntry: "bg-red-100",
-              protected: "border-2 border-red-400",
-              today: "bg-red-50 font-bold text-red-600 rounded-lg",
-            }}
-            modifiers={{
-              hasEntry: (date) => {
-                if (!date) return false;
-                try {
-                  const formattedDate = formatDateToYYYYMMDD(date);
-                  return (
-                    formattedDate &&
-                    entries.some((entry) => entry.date === formattedDate)
-                  );
-                } catch (error) {
-                  return false;
-                }
-              },
-              protected: (date) => {
-                if (!date) return false;
-                try {
-                  const formattedDate = formatDateToYYYYMMDD(date);
-                  return (
-                    formattedDate &&
-                    entries.some(
-                      (entry) =>
-                        entry.date === formattedDate &&
-                        entry.isPasswordProtected
-                    )
-                  );
-                } catch (error) {
-                  return false;
-                }
-              },
-            }}
-          />
-
-          <div className="flex items-center justify-between w-full mt-6">
-            <div className="flex items-center gap-2">
-              <div className="w-4 h-4 bg-red-100 rounded-full"></div>
-              <span className="text-sm">Tem Entrada</span>
+        {loading ? (
+          <CardContent className="flex flex-col items-center">
+            <div className="flex flex-col items-center justify-center">
+              <OrbitProgress color="#f87171" />
+              <div className="text-center text-red-400">
+                Carregando entradas...
+              </div>
             </div>
-            <div className="flex items-center gap-2">
-              <div className="w-4 h-4 border-2 border-red-400 rounded-full"></div>
-              <span className="text-sm">Protegido por Senha</span>
-            </div>
-          </div>
+          </CardContent>
+        ) : (
+          <CardContent className="flex flex-col items-center">
+            <Calendar
+              mode="single"
+              selected={selectedDate}
+              onSelect={handleDateSelect}
+              className="rounded-md border border-red-200"
+              locale={ptBR}
+              modifiersClassNames={{
+                selected:
+                  "bg-red-50 font-bold text-red-600 hover:bg-red-200 rounded-lg",
+                hasEntry: "bg-red-100",
+                protected: "border-2 border-red-400",
+                today: "bg-red-50 font-bold text-red-600 rounded-lg",
+              }}
+              modifiers={{
+                hasEntry: (date) => {
+                  if (!date) return false;
+                  try {
+                    const formattedDate = formatDateToYYYYMMDD(date);
+                    return (
+                      formattedDate &&
+                      entries.some((entry) => entry.date === formattedDate)
+                    );
+                  } catch (error) {
+                    return false;
+                  }
+                },
+                protected: (date) => {
+                  if (!date) return false;
+                  try {
+                    const formattedDate = formatDateToYYYYMMDD(date);
+                    return (
+                      formattedDate &&
+                      entries.some(
+                        (entry) =>
+                          entry.date === formattedDate &&
+                          entry.isPasswordProtected
+                      )
+                    );
+                  } catch (error) {
+                    return false;
+                  }
+                },
+              }}
+            />
 
-          <Button
-            className="mt-6 w-full bg-red-400 hover:bg-red-400/80"
-            onClick={() => {
-              if (selectedDate) {
-                const formattedDate = formatDateToYYYYMMDD(selectedDate);
-                if (formattedDate) {
-                  navigateToJournal(formattedDate);
+            <div className="flex items-center justify-between w-full mt-6">
+              <div className="flex items-center gap-2">
+                <div className="w-4 h-4 bg-red-100 rounded-full"></div>
+                <span className="text-sm">Tem Entrada</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <div className="w-4 h-4 border-2 border-red-400 rounded-full"></div>
+                <span className="text-sm">Protegido por Senha</span>
+              </div>
+            </div>
+
+            <Button
+              className="mt-6 w-full bg-red-400 hover:bg-red-400/80"
+              onClick={() => {
+                if (selectedDate) {
+                  const formattedDate = formatDateToYYYYMMDD(selectedDate);
+                  if (formattedDate) {
+                    navigateToJournal(formattedDate);
+                  }
                 }
-              }
-            }}
-          >
-            <Plus className="mr-2 h-4 w-4" />
-            Criar Nova Entrada
-          </Button>
-        </CardContent>
+              }}
+            >
+              <Plus className="mr-2 h-4 w-4" />
+              Criar Nova Entrada
+            </Button>
+          </CardContent>
+        )}
       </Card>
 
       <Dialog open={passwordDialogOpen} onOpenChange={setPasswordDialogOpen}>

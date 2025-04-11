@@ -45,7 +45,7 @@ export default function UsersPage() {
       >
         <MoveLeft className="text-neutral-500 text-2xl" />
         <div className="text-xs mt-0.5 text-neutral-500 uppercase group-hover:underline ">
-          voltar
+          início
         </div>
       </div>
       <Head>

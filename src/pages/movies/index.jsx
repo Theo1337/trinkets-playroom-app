@@ -155,7 +155,6 @@ export default function MovieCarousel({ rawMovies }) {
         return false;
       }
       // Filter by user
-      console.log(filterByUser, movie.addedBy);
       if (filterByUser && JSON.parse(movie.addedBy).id !== filterByUser) {
         return false;
       }

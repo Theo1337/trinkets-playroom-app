@@ -5,7 +5,6 @@ import { api } from "@/utils"; // Import the API utility
 export async function getEntriesForUser(userId) {
   // Fetch entries for a specific user from the API
   const response = await api.get(`/journals?userId=${userId}`);
-  console.log(response.data);
   return response.data; // Assuming the API returns the data in the `data` field
 }
 
@@ -16,7 +15,6 @@ export async function getEntryByDate(userId, date) {
 }
 
 export async function saveJournalEntry(entry) {
-  console.log(entry);
   if (entry.id) {
     // Update an existing entry
     const response = await api.put(`/journals/${entry.id}`, {
