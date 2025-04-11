@@ -188,7 +188,7 @@ export default function CalendarPage() {
                   "bg-red-50 font-bold text-red-600 hover:bg-red-200 rounded-lg",
                 hasEntry: "bg-red-100",
                 protected: "border-2 border-red-400",
-                today: "bg-red-50 font-bold text-red-600 rounded-lg",
+                today: "bg-white",
               }}
               modifiers={{
                 hasEntry: (date) => {
