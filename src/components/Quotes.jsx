@@ -157,7 +157,7 @@ function Quotes({ rawQuotes, user }) {
             }
           }}
           variant="movie"
-          className="w-full"
+          className="w-full bg-[#44403c] hover:bg-[#44403c]/80 transition"
         >
           {quotes.filter((each) => each.authorId === configs.authorId).length >
           0
@@ -221,7 +221,8 @@ function Quotes({ rawQuotes, user }) {
 
                   resetState();
                 }}
-                variant="destructive"
+                className="text-red-500 border-red-500 hover:text-red-600"
+                variant="outline"
               >
                 <Trash2 />
                 <span>Excluir</span>
@@ -236,7 +237,7 @@ function Quotes({ rawQuotes, user }) {
                   if (configs.type === "look") return;
                   saveQuote();
                 }}
-                className="w-full"
+                className="w-full bg-[#44403c] hover:bg-[#44403c]/80 transition"
               >
                 {configs.type === "look" ? "Fechar" : "Salvar"}
               </Button>
@@ -248,7 +249,7 @@ function Quotes({ rawQuotes, user }) {
                 if (configs.type === "look") return;
                 saveQuote();
               }}
-              className="w-full"
+              className="w-full bg-[#44403c] hover:bg-[#44403c]/80 transition"
             >
               {configs.type === "look" ? "Fechar" : "Salvar"}
             </Button>
