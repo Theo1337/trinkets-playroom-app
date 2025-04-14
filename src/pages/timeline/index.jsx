@@ -32,6 +32,8 @@ import {
   Trash2,
   Circle,
   MoveLeft,
+  SortAsc,
+  SortDesc,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -133,6 +135,7 @@ export default function Home({ rawEvents }) {
 
   // Timeline State
   const [items, setItems] = useState(rawEvents);
+  const [sortBy, setSortBy] = useState("asc");
 
   // UI State
   const [pageUnload, setPageUnload] = useState(false);
@@ -455,6 +458,13 @@ export default function Home({ rawEvents }) {
         <div className="space-y-6">
           {sortedItems
             .filter((e) => e.description)
+            .sort((a, b) => {
+              if (sortBy === "desc") {
+                return new Date(a.date) - new Date(b.date);
+              } else {
+                return new Date(b.date) - new Date(a.date);
+              }
+            })
             .map((item) => (
               <div key={item.id} className="relative pl-12">
                 {/* Horizontal connector line - no dots */}
@@ -859,7 +869,7 @@ export default function Home({ rawEvents }) {
       <div className="container mx-auto py-10 px-4">
         <div className="max-w-4xl mx-auto">
           <div className="relative">
-            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
+            <div className="flex sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
               <Tabs
                 value={activeView}
                 onValueChange={setActiveView}
@@ -882,6 +892,16 @@ export default function Home({ rawEvents }) {
                   </TabsTrigger>
                 </TabsList>
               </Tabs>
+              <div
+                onClick={() => setSortBy(sortBy === "asc" ? "desc" : "asc")}
+                className="p-2 bg-emerald-100 rounded-lg hover:bg-emerald-300/60 transition cursor-pointer"
+              >
+                {sortBy === "asc" ? (
+                  <SortDesc className="text-neutral-500" />
+                ) : (
+                  <SortAsc className="text-neutral-500" />
+                )}
+              </div>
             </div>
 
             {items.length === 0 ? (
@@ -901,6 +921,13 @@ export default function Home({ rawEvents }) {
                       <div className="space-y-12">
                         {sortedItems
                           .filter((e) => e.description)
+                          .sort((a, b) => {
+                            if (sortBy === "desc") {
+                              return new Date(a.date) - new Date(b.date);
+                            } else {
+                              return new Date(b.date) - new Date(a.date);
+                            }
+                          })
                           .map((item, index) => {
                             const isLeft = index % 2 === 0;
                             return (
