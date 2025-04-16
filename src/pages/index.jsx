@@ -279,10 +279,16 @@ export default function Home({ rawQuotes }) {
         style={{ backgroundColor: "#f3eae3" }}
       >
         <div className="container mx-auto flex justify-between items-center">
-          {configs.user.id == "" ? (
+          {configs.user.id == "" || configs.user.id == null ? (
             <div className="p-2 rounded-lg px-4 flex items-center gap-2 bg-stone-100 border-stone-300 text-stone-800 cursor-default shadow-md transition-all">
-              <User className="w-4 h-4" />
-              <div>Selecione um usuário para ativar as notificações</div>
+              <User className="w-4 h-4 hidden md:block" />
+              <div className=" hidden md:block">
+                Selecione um usuário para ativar as notificações
+              </div>
+              <div className="flex items-center justif-center gap-2 uppercase md:hidden">
+                <BellOff className="h-4 w-4" />
+                Sem usuário
+              </div>
             </div>
           ) : (
             <Button
@@ -315,6 +321,12 @@ export default function Home({ rawQuotes }) {
             isDialogOpen={isDialogOpen}
             setIsDialogOpen={setIsDialogOpen}
             users={configs.users}
+            setConfigs={(e) => {
+              setConfigs({
+                ...configs,
+                user: e,
+              });
+            }}
           />
         </div>
       </div>
@@ -711,6 +723,7 @@ function UserSelector({
   isDialogOpen,
   setIsDialogOpen,
   users,
+  setConfigs,
 }) {
   return (
     <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
@@ -765,6 +778,7 @@ function UserSelector({
                 onClick={() => {
                   setSelectedUser(user);
                   localStorage.setItem("user", JSON.stringify(user));
+                  setConfigs(user);
                   setIsDialogOpen(false);
                 }}
               >
