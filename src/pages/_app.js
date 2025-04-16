@@ -1,9 +1,32 @@
 import "../styles/globals.css";
 import "@/components/layout/layout.css";
 
-import { useEffect } from "react";
+import { useState, useEffect } from "react";
+import { useRouter } from "next/router";
+import LoadingAnimation from "@/components/LoadingAnimation";
 
 export default function App({ Component, pageProps }) {
+  const [loading, setLoading] = useState(false);
+  const [themeColor, setThemeColor] = useState("#000000"); // Default color
+  const router = useRouter();
+
+  useEffect(() => {
+    const handleStart = () => setLoading(true);
+    const handleComplete = () => {
+      setLoading(false);
+    };
+
+    router.events.on("routeChangeStart", handleStart);
+    router.events.on("routeChangeComplete", handleComplete);
+    router.events.on("routeChangeError", handleComplete);
+
+    return () => {
+      router.events.off("routeChangeStart", handleStart);
+      router.events.off("routeChangeComplete", handleComplete);
+      router.events.off("routeChangeError", handleComplete);
+    };
+  }, [router]);
+
   useEffect(() => {
     if ("serviceWorker" in navigator) {
       navigator.serviceWorker
@@ -20,5 +43,10 @@ export default function App({ Component, pageProps }) {
     }
   }, []);
 
-  return <Component {...pageProps} />;
+  return (
+    <>
+      {loading && <LoadingAnimation />}
+      <Component {...pageProps} />;
+    </>
+  );
 }

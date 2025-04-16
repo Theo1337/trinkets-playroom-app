@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import { api } from "@/utils";
 import { prisma } from "@/lib/database";
 
-import { LoadingScreen } from "@/components";
+import { GoBackButton } from "@/components";
 
 import Head from "next/head";
 
@@ -138,7 +138,6 @@ export default function Home({ rawEvents }) {
   const [sortBy, setSortBy] = useState("asc");
 
   // UI State
-  const [pageUnload, setPageUnload] = useState(false);
   const [open, setOpen] = useState(false);
   const [editingItem, setEditingItem] = useState(null);
   const [activeView, setActiveView] = useState("timeline");
@@ -870,19 +869,7 @@ export default function Home({ rawEvents }) {
         <meta name="theme_color" content="#f0fdf4" />
         <meta name="theme-color" content="#f0fdf4" />
       </Head>
-      <LoadingScreen open={pageUnload} />
-      <div
-        onClick={() => {
-          setPageUnload(true);
-          window.location.href = "/";
-        }}
-        className="flex items-center justify-center absolute top-0 gap-2 p-4 group cursor-pointer"
-      >
-        <MoveLeft className="text-neutral-500 text-2xl" />
-        <div className="text-xs mt-0.5 text-neutral-500 uppercase group-hover:underline ">
-          voltar
-        </div>
-      </div>
+      <GoBackButton />
       <div className="flex flex-col items-center justify-start pt-16 bg-green-50 text-black">
         <div className="font-logo text-4xl text-neutral-700 mt-1">Timeline</div>
         <div className="text-xs text-neutral-500 mt-2 uppercase">

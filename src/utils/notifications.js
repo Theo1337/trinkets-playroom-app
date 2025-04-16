@@ -1,4 +1,4 @@
-export async function requestNotificationPermission(e) {
+export async function requestNotificationPermission() {
   if (!("Notification" in window)) {
     console.error("This browser does not support notifications.");
     return;
@@ -38,6 +38,47 @@ export async function subscribeToPushNotifications(user) {
 
   console.log("Subscribed to push notifications:", subscription);
   return subscription; // Return the subscription object
+}
+
+export async function unsubscribeFromPushNotifications() {
+  if (!("serviceWorker" in navigator)) {
+    console.error("Service Worker is not supported in this browser.");
+    return false;
+  }
+
+  const registration = await navigator.serviceWorker.ready;
+
+  // Get the current subscription
+  const subscription = await registration.pushManager.getSubscription();
+
+  if (!subscription) {
+    console.warn("No subscription found.");
+    return false;
+  }
+
+  try {
+    // Unsubscribe from the push service
+    const unsubscribed = await subscription.unsubscribe();
+    if (unsubscribed) {
+      console.log("Unsubscribed from push notifications.");
+
+      // Remove the subscription from the server
+      await fetch("/api/notifications", {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ endpoint: subscription.endpoint }),
+      });
+
+      console.log("Subscription removed from the server.");
+      return true;
+    } else {
+      console.error("Failed to unsubscribe from push notifications.");
+      return false;
+    }
+  } catch (error) {
+    console.error("Error unsubscribing from push notifications:", error);
+    return false;
+  }
 }
 
 function urlBase64ToUint8Array(base64String) {

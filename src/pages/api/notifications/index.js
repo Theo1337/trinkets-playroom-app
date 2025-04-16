@@ -71,7 +71,47 @@ export default async function handler(req, res) {
       console.error("Error sending notifications:", error);
       return res.status(500).json({ error: "Failed to send notifications." });
     }
+  } else if (req.method === "DELETE") {
+    const { endpoint } = req.body;
+
+    if (!endpoint) {
+      return res
+        .status(400)
+        .json({ error: "Endpoint is required to unsubscribe." });
+    }
+
+    try {
+      // Remove the subscription from the database
+      await prisma.subscription.delete({
+        where: { endpoint },
+      });
+
+      return res.status(200).json({ message: "Unsubscribed successfully." });
+    } catch (error) {
+      console.error("Error unsubscribing:", error);
+      return res.status(500).json({ error: "Failed to unsubscribe." });
+    }
   } else {
     return res.status(405).json({ error: "Method not allowed" });
   }
+}
+
+export async function requestNotificationPermission() {
+  if (!("Notification" in window)) {
+    console.error("This browser does not support notifications.");
+    return "unsupported";
+  }
+
+  console.log("Requesting notification permission...");
+  const permission = await Notification.requestPermission();
+
+  if (permission === "granted") {
+    console.log("Notification permission granted.");
+  } else if (permission === "denied") {
+    console.error("Notification permission denied.");
+  } else {
+    console.warn("Notification permission dismissed or not resolved.");
+  }
+
+  return permission;
 }

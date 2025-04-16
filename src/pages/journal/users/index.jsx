@@ -16,6 +16,7 @@ import { OrbitProgress } from "react-loading-indicators";
 import Head from "next/head";
 
 import { MoveLeft } from "lucide-react";
+import { GoBackButton } from "@/components";
 
 export default function UsersPage() {
   const [users, setUsers] = useState([]);
@@ -37,19 +38,11 @@ export default function UsersPage() {
 
   return (
     <div className="px-8 grid place-items-center bg-red-50 min-h-screen">
-      <div
-        onClick={() => {
-          window.location.href = "/";
-        }}
-        className="flex items-center justify-center absolute top-0 left-0 gap-2 p-4 group cursor-pointer"
-      >
-        <MoveLeft className="text-neutral-500 text-2xl" />
-        <div className="text-xs mt-0.5 text-neutral-500 uppercase group-hover:underline ">
-          início
-        </div>
-      </div>
+      <GoBackButton />
       <Head>
         <title>Cafofo Estelar - Diário | Usuários</title>
+        <meta name="theme-color" content="#fef2f2 " />
+        <meta name="theme_color" content="#fef2f2 " />
       </Head>
       <div className="flex items-center justify-center flex-col gap-2">
         <div className="font-logo text-4xl text-neutral-700 ">Diário</div>

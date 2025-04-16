@@ -64,7 +64,7 @@ import { api } from "@/utils";
 import { prisma } from "@/lib/database";
 import Head from "next/head";
 
-import { LoadingScreen } from "../../components";
+import { GoBackButton } from "../../components";
 
 export const getServerSideProps = async () => {
   const movies = await prisma.movies.findMany({
@@ -87,7 +87,6 @@ export const getServerSideProps = async () => {
 /** @param {import('next').InferGetServerSidePropsType<typeof getServerSideProps> } props */
 export default function MovieCarousel({ rawMovies }) {
   const [allMovies, setAllMovies] = useState(rawMovies);
-  const [pageUnload, setPageUnload] = useState(false);
   const scrollContainerRef = useRef(null);
   const tvScrollContainerRef = useRef(null);
   const searchResultsRef = useRef(null);
@@ -1015,20 +1014,7 @@ export default function MovieCarousel({ rawMovies }) {
 
   return (
     <div className="">
-      <LoadingScreen open={pageUnload} />
-      {/* Search and filter bar */}
-      <div
-        onClick={() => {
-          setPageUnload(true);
-          window.location.href = "/";
-        }}
-        className="flex items-center justify-center absolute top-0 gap-2 p-4 group cursor-pointer"
-      >
-        <MoveLeft className="text-neutral-500 text-2xl" />
-        <div className="text-xs mt-0.5 text-neutral-500 uppercase group-hover:underline ">
-          voltar
-        </div>
-      </div>
+      <GoBackButton />
       <div className="flex flex-col items-center pt-8 justify-start min-h-screen bg-slate-300 text-black">
         <div className="font-logo text-4xl text-neutral-700 mt-1">Filmes</div>
         <div className="text-xs text-neutral-500 mt-2 uppercase">

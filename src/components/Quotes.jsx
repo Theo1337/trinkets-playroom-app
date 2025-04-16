@@ -94,7 +94,7 @@ function Quotes({ rawQuotes, user }) {
                 JSON.parse(localStorage.getItem("user")).name
               }`,
               url: "/",
-              userId: configs.author,
+              userId: user.id,
             });
             resetState();
           });

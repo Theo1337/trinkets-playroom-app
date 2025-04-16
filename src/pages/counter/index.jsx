@@ -1,13 +1,11 @@
-// IMPORTANT TO DO: ADD SKELETON TO MAKE LOADING ANIMATION
-
 import React, { useState } from "react";
 
 import { api } from "@/utils";
 import { prisma } from "@/lib/database";
 
-import { format, set, setDefaultOptions } from "date-fns";
+import { setDefaultOptions } from "date-fns";
 
-import { Section, LoadingScreen } from "../../components";
+import { Section, GoBackButton } from "../../components";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -22,7 +20,7 @@ import {
 
 import { OrbitProgress } from "react-loading-indicators";
 
-import { MoveLeft, Plus, Pencil, Trash2 } from "lucide-react";
+import { Plus, Pencil, Trash2 } from "lucide-react";
 import { ptBR } from "date-fns/locale";
 
 import Head from "next/head";
@@ -47,7 +45,6 @@ export const getServerSideProps = async () => {
 
 /** @param {import('next').InferGetServerSidePropsType<typeof getServerSideProps> } props */
 function Home({ rawCounters }) {
-  const [pageUnload, setPageUnload] = useState(false);
   const [counters, setCounters] = useState(rawCounters);
   const [configs, setConfigs] = useState({
     type: "add",
@@ -184,19 +181,7 @@ function Home({ rawCounters }) {
         <meta name="theme_color" content="#f3e8ff" />
         <meta name="theme-color" content="#f3e8ff" />
       </Head>
-      <LoadingScreen open={pageUnload} />
-      <div
-        onClick={() => {
-          setPageUnload(true);
-          window.location.href = "/";
-        }}
-        className="flex items-center justify-center absolute top-0 gap-2 p-4 group cursor-pointer"
-      >
-        <MoveLeft className="text-neutral-500 text-2xl" />
-        <div className="text-xs mt-0.5 text-neutral-500 uppercase group-hover:underline ">
-          voltar
-        </div>
-      </div>
+      <GoBackButton />
       <div className="flex flex-col items-center justify-start min-h-screen p-8 pt-16 bg-purple-100 text-black">
         <div className="font-logo text-4xl text-neutral-700 mt-1">
           Contadores
