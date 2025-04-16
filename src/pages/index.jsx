@@ -133,6 +133,7 @@ function Home({ rawQuotes }) {
     if (sub) {
       setNotificationsEnabled(true);
     }
+    alert(JSON.stringify(sub));
   }, []);
 
   const getUsers = async () => {
