@@ -182,7 +182,6 @@ function Home({ rawQuotes }) {
     });
     localStorage.setItem("subscription", JSON.stringify(subscription));
     setNotificationsEnabled(true);
-    alert(JSON.stringify(subscription));
   };
 
   return (
@@ -337,7 +336,7 @@ function Home({ rawQuotes }) {
                   onCheckedChange={(e) => {
                     if (e) {
                       setNotificationsEnabled(e);
-                      requestNotificationPermission();
+                      handleEnableNotifications();
                     }
                   }}
                 />

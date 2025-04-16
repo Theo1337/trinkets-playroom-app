@@ -1,9 +1,8 @@
-export async function requestNotificationPermission() {
+export async function requestNotificationPermission(e) {
   if (!("Notification" in window)) {
     console.error("This browser does not support notifications.");
     return;
   }
-
   const permission = await Notification.requestPermission();
   if (permission === "granted") {
     console.log("Notification permission granted.");
@@ -15,7 +14,7 @@ export async function requestNotificationPermission() {
 export async function subscribeToPushNotifications(user) {
   if (!("serviceWorker" in navigator)) {
     console.error("Service Worker is not supported in this browser.");
-    return "no service Worker";
+    return null;
   }
 
   const registration = await navigator.serviceWorker.ready;
@@ -26,6 +25,8 @@ export async function subscribeToPushNotifications(user) {
       process.env.NEXT_PUBLIC_VAPID_KEY
     ),
   });
+
+  console.log("Subscribed to push notifications:", subscription);
 
   // Send the subscription to your server
 
