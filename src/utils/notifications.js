@@ -15,7 +15,7 @@ export async function requestNotificationPermission() {
 export async function subscribeToPushNotifications(user) {
   if (!("serviceWorker" in navigator)) {
     console.error("Service Worker is not supported in this browser.");
-    return null;
+    return "no service Worker";
   }
 
   const registration = await navigator.serviceWorker.ready;
