@@ -17,3 +17,9 @@ self.addEventListener("notificationclick", (event) => {
   const url = event.notification.data;
   event.waitUntil(clients.openWindow(url));
 });
+
+self.addEventListener("fetch", (event) => {
+  if (event.request.url.endsWith("/manifest.json")) {
+    event.respondWith(fetch(event.request));
+  }
+});
