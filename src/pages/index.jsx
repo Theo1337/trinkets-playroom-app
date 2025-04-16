@@ -26,6 +26,7 @@ import {
   subscribeToPushNotifications,
 } from "@/utils/notifications";
 import { Button } from "@/components/ui/button";
+import { Switch } from "@/components/ui/switch";
 
 export const getServerSideProps = async () => {
   const startOfDay = new Date(
@@ -234,7 +235,7 @@ function Home({ rawQuotes }) {
           </Head>
           <div className="font-logo md:block flex items-center justify-center relative text-4xl text-neutral-700 mt-1">
             Cafofo Estelar
-            <div className="absolute -right-64 top-0 p-2 rounded-full">
+            <div className="md:flex hidden absolute -right-64 top-0 p-2 rounded-full">
               <Button
                 className={`flex items-center gap-2 rounded-full ${
                   notificationsEnabled
@@ -324,6 +325,21 @@ function Home({ rawQuotes }) {
                     <LogOut className="text-red-500 text-2xl" />
                   </div>
                 </div>
+              </div>
+              <div className="flex gap-2 items-center justify-between px-2 w-full">
+                <div className="text-neutral-500 font-bold">
+                  Ativar notificações
+                </div>
+                <Switch
+                  checked={notificationsEnabled}
+                  className="data-[state=checked]:bg-stone-600"
+                  onCheckedChange={(e) => {
+                    if (e) {
+                      setNotificationsEnabled(e);
+                      requestNotificationPermission();
+                    }
+                  }}
+                />
               </div>
             </Section>
           )}
