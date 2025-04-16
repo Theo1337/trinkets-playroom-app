@@ -56,3 +56,11 @@ model Journals {
     userId String
     date String
 }
+
+model Subscription {
+  id          String   @id @default(cuid())
+  endpoint    String   @unique
+  keys        Json
+  createdAt   DateTime @default(now())
+  userId String
+}

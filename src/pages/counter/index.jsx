@@ -129,6 +129,14 @@ function Home({ rawCounters }) {
               counters.map((each) => (each.id === configs.id ? res.data : each))
             );
 
+            api.post("/notifications", {
+              body: `${
+                JSON.parse(localStorage.getItem("user")).name
+              } editou o contador "${configs.name}"!`,
+              url: "/counter",
+              userId: JSON.parse(localStorage.getItem("user")).id,
+            });
+
             setTimeout(() => {
               resetState();
 
@@ -145,6 +153,14 @@ function Home({ rawCounters }) {
             lastUpdated: new Date(configs.lastUpdated),
           })
           .then((res) => {
+            api.post("/notifications", {
+              body: `${
+                JSON.parse(localStorage.getItem("user")).name
+              } adicionou o contador "${configs.name}"!`,
+              url: "/counter",
+              userId: JSON.parse(localStorage.getItem("user")).id,
+            });
+
             setTimeout(() => {
               setCounters([...counters, res.data]);
               resetState();

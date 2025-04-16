@@ -218,6 +218,13 @@ export default function Home({ rawEvents }) {
           createdAt: new Date(),
         })
         .then((res) => {
+          api.post("/notifications", {
+            body: `${
+              JSON.parse(localStorage.getItem("user")).name
+            } adicionou um "favorito" no timeline!`,
+            url: "/timeline",
+            userId: JSON.parse(localStorage.getItem("user")).id,
+          });
           setItems([...items, res.data]);
         });
     } else {
@@ -230,6 +237,13 @@ export default function Home({ rawEvents }) {
           createdAt: new Date(),
         })
         .then((res) => {
+          api.post("/notifications", {
+            body: `${
+              JSON.parse(localStorage.getItem("user")).name
+            } adicionou uma entrada no timeline!`,
+            url: "/timeline",
+            userId: JSON.parse(localStorage.getItem("user")).id,
+          });
           setItems([...items, res.data]);
         });
     }
@@ -279,6 +293,15 @@ export default function Home({ rawEvents }) {
             }
             return updatedItems;
           });
+
+          api.post("/notifications", {
+            body: `${
+              JSON.parse(localStorage.getItem("user")).name
+            } atualizou sua entrada no timeline!`,
+            url: "/timeline",
+            userId: JSON.parse(localStorage.getItem("user")).id,
+          });
+
           setEditingItem(null);
           setOpen(false);
         });

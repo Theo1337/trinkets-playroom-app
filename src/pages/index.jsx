@@ -8,6 +8,8 @@ import {
   ChartGantt,
   CircleCheckBig,
   LogOut,
+  Bell,
+  BellOff,
 } from "lucide-react";
 
 import { Dialog, DialogTitle, DialogContent } from "@/components/ui/dialog";
@@ -18,6 +20,12 @@ import { prisma } from "@/lib/database";
 import { api } from "@/utils";
 
 import Head from "next/head";
+
+import {
+  requestNotificationPermission,
+  subscribeToPushNotifications,
+} from "@/utils/notifications";
+import { Button } from "@/components/ui/button";
 
 export const getServerSideProps = async () => {
   const startOfDay = new Date(
@@ -107,6 +115,8 @@ function Home({ rawQuotes }) {
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
 
+  const [notificationsEnabled, setNotificationsEnabled] = useState(false);
+
   const [configs, setConfigs] = useState({
     user: {
       name: "",
@@ -116,6 +126,13 @@ function Home({ rawQuotes }) {
     },
     users: [],
   });
+
+  useEffect(() => {
+    const sub = localStorage.getItem("subscription");
+    if (sub) {
+      setNotificationsEnabled(true);
+    }
+  }, []);
 
   const getUsers = async () => {
     const users = await api.get("/users");
@@ -156,6 +173,15 @@ function Home({ rawQuotes }) {
       setOpen(false);
     }
   }, [configs.user]);
+
+  const handleEnableNotifications = async () => {
+    await requestNotificationPermission();
+    const subscription = await subscribeToPushNotifications({
+      id: configs.user.id,
+    });
+    localStorage.setItem("subscription", JSON.stringify(subscription));
+    setNotificationsEnabled(true);
+  };
 
   return (
     <div>
@@ -208,6 +234,27 @@ function Home({ rawQuotes }) {
           </Head>
           <div className="font-logo md:block flex items-center justify-center relative text-4xl text-neutral-700 mt-1">
             Cafofo Estelar
+            <div className="absolute -right-64 top-0 p-2 rounded-full">
+              <Button
+                className={`flex items-center gap-2 rounded-full ${
+                  notificationsEnabled
+                    ? "bg-white/30 transition border-green-300 text-green-800 hover:bg-green-200"
+                    : "bg-stone-100 border-stone-300 text-stone-800 hover:bg-stone-200"
+                } shadow-sm`}
+                variant="ghost"
+                onClick={() => {
+                  if (!notificationsEnabled) {
+                    handleEnableNotifications();
+                  }
+                }}
+              >
+                {notificationsEnabled ? (
+                  <Bell className="h-4 w-4" />
+                ) : (
+                  <BellOff className="h-4 w-4" />
+                )}
+              </Button>
+            </div>
             {configs.user.avatar && (
               <div
                 onClick={() => {

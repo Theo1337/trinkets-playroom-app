@@ -80,7 +80,7 @@ export default function JournalPage() {
       return;
     }
 
-    const id = Number.parseInt(storedUserId);
+    const id = storedUserId;
     setUserId(id);
 
     // Set date from URL parameter or use today's date

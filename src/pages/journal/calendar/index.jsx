@@ -48,7 +48,7 @@ export default function CalendarPage() {
       return;
     }
 
-    const id = Number.parseInt(storedUserId);
+    const id = storedUserId;
     setUserId(id);
 
     // Load entries for this user
@@ -188,7 +188,7 @@ export default function CalendarPage() {
                   "bg-red-50 font-bold text-red-600 hover:bg-red-200 rounded-lg",
                 hasEntry: "bg-red-100",
                 protected: "border-2 border-red-400",
-                today: "bg-white",
+                today: "bg-gray-100 hover:bg-gray-200",
               }}
               modifiers={{
                 hasEntry: (date) => {

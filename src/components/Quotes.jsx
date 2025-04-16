@@ -17,7 +17,7 @@ import {
 
 import { Trash2 } from "lucide-react";
 
-import { format, set, setDefaultOptions } from "date-fns";
+import { format, setDefaultOptions } from "date-fns";
 import { ptBR } from "date-fns/locale";
 
 function Quotes({ rawQuotes, user }) {
@@ -69,6 +69,13 @@ function Quotes({ rawQuotes, user }) {
               quotes.map((each) => (each.id === configs.id ? res.data : each))
             );
 
+            api.post("/notifications", {
+              body: `${
+                JSON.parse(localStorage.getItem("user")).name
+              } editou sua citação`,
+              url: "/",
+              userId: user.id,
+            });
             resetState();
           });
       } else {
@@ -82,6 +89,13 @@ function Quotes({ rawQuotes, user }) {
           .then((res) => {
             setQuotes([...quotes, res.data]);
 
+            api.post("/notifications", {
+              body: `Nova citação adicionada por ${
+                JSON.parse(localStorage.getItem("user")).name
+              }`,
+              url: "/",
+              userId: configs.author,
+            });
             resetState();
           });
       }

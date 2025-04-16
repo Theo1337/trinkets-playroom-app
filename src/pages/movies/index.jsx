@@ -406,6 +406,7 @@ export default function MovieCarousel({ rawMovies }) {
           name: editingMovie.name,
           image: editingMovie.image,
           providers: editingMovie.providers,
+          type: editingMovie.type,
           genres: editingMovie.genres,
           date: new Date(editingMovie.date),
           watched: editingMovie.watched,
@@ -417,6 +418,14 @@ export default function MovieCarousel({ rawMovies }) {
               each.id === editingMovie.id ? res.data : each
             )
           );
+
+          api.post("/notifications", {
+            body: `${JSON.parse(localStorage.getItem("user")).name} editou ${
+              editingMovie.type === "movie" ? "um filme" : "uma série"
+            } na lista!`,
+            url: "/timeline",
+            userId: JSON.parse(localStorage.getItem("user")).id,
+          });
           // Reset form
           setSearchType("movie");
           setSearchQuery("");
@@ -445,6 +454,14 @@ export default function MovieCarousel({ rawMovies }) {
         .then((res) => {
           setAllMovies([res.data, ...allMovies]);
           setOpen(false);
+
+          api.post("/notifications", {
+            body: `${JSON.parse(localStorage.getItem("user")).name} adicionou ${
+              selectedMovie.type === "movie" ? "um filme" : "uma série"
+            } a lista!`,
+            url: "/timeline",
+            userId: JSON.parse(localStorage.getItem("user")).id,
+          });
           //   Reset form
           setSearchQuery("");
           setSearchType("movie");
