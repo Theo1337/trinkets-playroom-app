@@ -7,7 +7,6 @@ import LoadingAnimation from "@/components/LoadingAnimation";
 
 export default function App({ Component, pageProps }) {
   const [loading, setLoading] = useState(false);
-  const [themeColor, setThemeColor] = useState("#000000"); // Default color
   const router = useRouter();
 
   useEffect(() => {
@@ -46,7 +45,7 @@ export default function App({ Component, pageProps }) {
   return (
     <>
       {loading && <LoadingAnimation />}
-      <Component {...pageProps} />;
+      <Component {...pageProps} />
     </>
   );
 }
