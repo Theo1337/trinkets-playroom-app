@@ -1073,7 +1073,7 @@ export default function MovieCarousel({ rawMovies }) {
                   </DropdownMenuLabel>
                   {allUsers.map((user) => (
                     <DropdownMenuItem
-                      key={user}
+                      key={user.id}
                       className={cn(filterByUser === user && "bg-muted")}
                       onClick={() => handleFilterChange("user", user.id)}
                     >
