@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import { api } from "@/utils";
 import { prisma } from "@/lib/database";
 
-import { GoBackButton } from "@/components";
+import { GoBackButton, Header } from "@/components";
 
 import Head from "next/head";
 
@@ -870,12 +870,11 @@ export default function Home({ rawEvents }) {
         <meta name="theme-color" content="#f0fdf4" />
       </Head>
       <GoBackButton />
-      <div className="flex flex-col items-center justify-start pt-16 bg-green-50 text-black">
-        <div className="font-logo text-4xl text-neutral-700 mt-1">Timeline</div>
-        <div className="text-xs text-neutral-500 mt-2 uppercase">
-          {"Timeline de eventos!"}
-        </div>
-      </div>
+      <Header
+        title="Timeline"
+        description="Timeline de eventos!"
+        className="pt-16"
+      />
       <div className="container mx-auto py-10 px-4">
         <div className="max-w-4xl mx-auto">
           <div className="relative">

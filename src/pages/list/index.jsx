@@ -64,7 +64,7 @@ import { api } from "@/utils";
 import { prisma } from "@/lib/database";
 import Head from "next/head";
 
-import { GoBackButton } from "../../components";
+import { GoBackButton, Header } from "../../components";
 
 export const getServerSideProps = async () => {
   const movies = await prisma.movies.findMany({
@@ -422,7 +422,7 @@ export default function MovieCarousel({ rawMovies }) {
             body: `${JSON.parse(localStorage.getItem("user")).name} editou ${
               editingMovie.type === "movie" ? "um filme" : "uma série"
             } na lista!`,
-            url: "/timeline",
+            url: "/;list",
             userId: JSON.parse(localStorage.getItem("user")).id,
           });
           // Reset form
@@ -458,7 +458,7 @@ export default function MovieCarousel({ rawMovies }) {
             body: `${JSON.parse(localStorage.getItem("user")).name} adicionou ${
               selectedMovie.type === "movie" ? "um filme" : "uma série"
             } a lista!`,
-            url: "/timeline",
+            url: "/;list",
             userId: JSON.parse(localStorage.getItem("user")).id,
           });
           //   Reset form
@@ -1016,10 +1016,10 @@ export default function MovieCarousel({ rawMovies }) {
     <div className="">
       <GoBackButton />
       <div className="flex flex-col items-center pt-8 justify-start min-h-screen bg-slate-300 text-black">
-        <div className="font-logo text-4xl text-neutral-700 mt-1">Filmes</div>
-        <div className="text-xs text-neutral-500 mt-2 uppercase">
-          {"Lista de filmes para assistir juntinhos!"}
-        </div>
+        <Header
+          title="Lista"
+          description="Filmes e séries para nós assistirmos juntinhos"
+        />
         <Head>
           <title>Cafofo Estelar - Lista de filmes</title>
           <meta name="theme_color" content="#cbd5e1" />

@@ -39,6 +39,7 @@ import {
   Bell,
   BellOff,
   Trash,
+  Flame,
 } from "lucide-react";
 import Link from "next/link";
 import { useState, useEffect } from "react";
@@ -50,37 +51,13 @@ import {
   subscribeToPushNotifications,
   unsubscribeFromPushNotifications,
 } from "@/utils/notifications";
-import { format } from "date-fns";
+import { format, isSameDay, subDays, addHours } from "date-fns";
 import { Skeleton } from "@/components/ui/skeleton";
 import Head from "next/head";
+import { Header } from "@/components";
 
 export const getServerSideProps = async () => {
-  const startOfDay = new Date(
-    new Date().getFullYear(),
-    new Date().getMonth(),
-    new Date().getDate()
-  );
-  const endOfDay = new Date(
-    new Date().getFullYear(),
-    new Date().getMonth(),
-    new Date().getDate() + 1
-  );
-
   const quotes = await prisma.quotes.findMany({
-    where: {
-      AND: [
-        {
-          date: {
-            gte: startOfDay, // Convert to timestamp (milliseconds)
-          },
-        },
-        {
-          date: {
-            lt: endOfDay, // Convert to timestamp (milliseconds)
-          },
-        },
-      ],
-    },
     orderBy: [
       {
         date: "desc",
@@ -110,6 +87,54 @@ export default function Home({ rawQuotes }) {
   const [newQuoteContent, setNewQuoteContent] = useState("");
   const isMobile = useMediaQuery("(max-width: 768px)");
 
+  const [streak, setStreak] = useState(0);
+
+  useEffect(() => {
+    calculateStreak();
+  }, [quotesData]);
+
+  const adjustToBrazilianTime = (date) => addHours(new Date(date), -3);
+
+  const calculateStreak = () => {
+    // Filter quotes to include only those from the two specific users
+    const filteredQuotes = quotesData.filter(
+      (quote) =>
+        quote.authorId === "277539638397370369" ||
+        quote.authorId === "1250558369937363107"
+    );
+
+    // Sort quotes by date in descending order
+    const sortedQuotes = [...filteredQuotes].sort(
+      (a, b) => new Date(b.date) - new Date(a.date)
+    );
+
+    let currentStreak = 0;
+    let currentDate = adjustToBrazilianTime(new Date()); // Adjust to Brazilian time
+
+    while (true) {
+      // Check if both users have quotes for the current date
+      const hasUser1Quote = sortedQuotes.some(
+        (quote) =>
+          quote.authorId === "277539638397370369" &&
+          isSameDay(new Date(quote.date), currentDate)
+      );
+
+      const hasUser2Quote = sortedQuotes.some(
+        (quote) =>
+          quote.authorId === "1250558369937363107" &&
+          isSameDay(new Date(quote.date), currentDate)
+      );
+
+      if (hasUser1Quote && hasUser2Quote) {
+        currentStreak++;
+        currentDate = subDays(currentDate, 1); // Move to the previous day
+      } else {
+        break; // Stop the streak if one or both users are missing
+      }
+    }
+
+    setStreak(currentStreak);
+  };
   useEffect(() => {
     const sub = localStorage.getItem("subscription");
     if (sub) {
@@ -255,7 +280,9 @@ export default function Home({ rawQuotes }) {
 
   // Find if current user has a quote
   const currentUserQuote = selectedUser
-    ? quotesData.find((quote) => quote.authorId === selectedUser.id)
+    ? quotesData
+        .filter((e) => isSameDay(new Date(e.date), new Date()))
+        .find((quote) => quote.authorId === selectedUser.id)
     : null;
 
   return (
@@ -332,20 +359,18 @@ export default function Home({ rawQuotes }) {
       </div>
 
       <header className="container mx-auto py-6 px-4">
-        <div className="text-center mb-8">
-          <h1 className="text-5xl md:text-7xl font-logo text-center text-stone-800 mb-2 drop-shadow-sm">
-            Cafofo Estelar
-          </h1>
-          <div className="text-sm text-neutral-500 mt-4  uppercase">
-            {`Seja bem-vind${selectedUser?.pronoum} ao cantinho do Theo e da Ana!`}
-          </div>
-        </div>
+        <Header
+          title="Cafofo Estelar"
+          description={`Seja bem-vind${selectedUser?.pronoum} ao cantinho do Theo e da Ana!`}
+          className="mb-8"
+        />
         <QuotesSection
           selectedUser={selectedUser}
           quotesData={quotesData}
           onQuoteAction={handleOpenQuoteDialog}
           currentUserQuote={currentUserQuote}
           users={configs.users}
+          streak={streak}
         />
       </header>
 
@@ -368,7 +393,7 @@ export default function Home({ rawQuotes }) {
           <LinkCard
             href="/list"
             icon={<Film className="h-6 w-6 text-stone-700" />}
-            title="Filmes & Séries"
+            title="Lista"
             description="Filmes e séries para nós assistirmos juntinhos"
             requiresUser={true}
             selectedUser={selectedUser}
@@ -818,105 +843,129 @@ function QuotesSection({
   onQuoteAction,
   currentUserQuote,
   users,
+  streak,
 }) {
+  const adjustToBrazilianTime = (date) => addHours(new Date(date), -3);
+
   return (
     <div className="space-y-4">
       <h2 className="text-xl font-semibold text-stone-800 mb-4 flex items-center">
-        <span className="mr-2">Citações do Dia</span>
-        <div className="h-px flex-grow bg-stone-300 ml-4"></div>
+        <span className="mr-2 flex gap-1 items-center">
+          Citações do Dia -
+          <div className="flex items-center justify-center text-neutral-500 gap-1 text-base">
+            <Flame
+              className={`text-6xl ${
+                streak > 0
+                  ? "text-orange-700 flame-animate"
+                  : "text-stone-700 fill-stone-500"
+              }`}
+            />
+            <div className="font-bold">
+              {streak} {streak === 1 ? "dia seguido" : "dias seguidos"}...
+            </div>
+          </div>
+        </span>
+        <div className="h-px flex-grow bg-stone-300 ml-2"></div>
       </h2>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 relative">
         {quotesData.length > 0 ? (
-          quotesData.map((quote) => {
-            const user = users.find((u) => u.id === quote.authorId);
-            const isCurrentUser = selectedUser?.id === quote.authorId;
+          quotesData
+            .filter((e) =>
+              isSameDay(
+                adjustToBrazilianTime(new Date(e.date)),
+                adjustToBrazilianTime(new Date())
+              )
+            )
+            .map((quote) => {
+              const user = users.find((u) => u.id === quote.authorId);
+              const isCurrentUser = selectedUser?.id === quote.authorId;
 
-            return (
-              <div key={quote.id}>
-                {users.length <= 0 ? (
-                  <div
-                    className="p-5 rounded-lg shadow-md bg-stone-50/50"
-                    style={{ backgroundColor: "#ebe0d6" }}
-                  >
-                    <div className="flex items-start gap-3">
-                      <Skeleton className="h-10 w-10 rounded-full" />
-                      <div className="flex-1 space-y-2">
-                        <Skeleton className="h-4 w-3/4 rounded" />
-                        <Skeleton className="h-3 w-1/2 rounded" />
-                      </div>
-                    </div>
-                    <div className="mt-4 space-y-2">
-                      <Skeleton className="h-3 w-full rounded" />
-                      <Skeleton className="h-3 w-5/6 rounded" />
-                    </div>
-                  </div>
-                ) : (
-                  <div
-                    key={quote.id}
-                    className={`p-5 rounded-lg shadow-md transition-all ${
-                      isCurrentUser
-                        ? "ring-2 ring-stone-400 bg-stone-50"
-                        : "bg-stone-50/50"
-                    }`}
-                    style={{
-                      backgroundColor: isCurrentUser ? "#ebe0d6" : "#ebe0d6",
-                    }}
-                  >
-                    <div className="flex items-start gap-3">
-                      <Avatar
-                        className={`h-10 w-10 border-2 ${
-                          isCurrentUser
-                            ? "border-stone-400"
-                            : "border-stone-200"
-                        } mt-1`}
-                      >
-                        <AvatarImage
-                          src={`https://cdn.discordapp.com/avatars/${user?.id}/${user?.avatar}`}
-                          alt={user?.name}
-                        />
-                        <AvatarFallback className="bg-stone-200 text-stone-800 text-xs">
-                          {user?.name.slice(0, 5).toUpperCase()}
-                        </AvatarFallback>
-                      </Avatar>
-                      <div className="flex-1">
-                        <div className="flex justify-between items-center mb-1">
-                          <h3 className="font-bold text-stone-900">
-                            {quote.author}{" "}
-                            <span className="italic font-normal text-neutral-500">
-                              disse:
-                            </span>
-                          </h3>
-                          {isCurrentUser && (
-                            <Button
-                              size="sm"
-                              variant="ghost"
-                              className="h-8 w-8 p-0 rounded-full text-stone-700 hover:text-stone-900 hover:bg-stone-200 transition-colors"
-                              onClick={() => onQuoteAction(quote)}
-                            >
-                              <Edit className="h-4 w-4" />
-                              <span className="sr-only">Editar citação</span>
-                            </Button>
-                          )}
-                        </div>
-                        <p className="text-stone-900">{quote.quote}</p>
-                        <div className="flex justify-between items-center mt-2">
-                          <p className="text-sm text-neutral-500 font-medium">
-                            — {user?.name}
-                          </p>
-                          <p className="text-xs text-stone-600">
-                            Postado hoje às {format(quote.date, "HH:mm")}
-                          </p>
+              return (
+                <div key={quote.id}>
+                  {users.length <= 0 ? (
+                    <div
+                      className="p-5 rounded-lg shadow-md bg-stone-50/50"
+                      style={{ backgroundColor: "#ebe0d6" }}
+                    >
+                      <div className="flex items-start gap-3">
+                        <Skeleton className="h-10 w-10 rounded-full" />
+                        <div className="flex-1 space-y-2">
+                          <Skeleton className="h-4 w-3/4 rounded" />
+                          <Skeleton className="h-3 w-1/2 rounded" />
                         </div>
                       </div>
+                      <div className="mt-4 space-y-2">
+                        <Skeleton className="h-3 w-full rounded" />
+                        <Skeleton className="h-3 w-5/6 rounded" />
+                      </div>
                     </div>
-                  </div>
-                )}
-              </div>
-            );
-          })
+                  ) : (
+                    <div
+                      key={quote.id}
+                      className={`p-5 rounded-lg shadow-md transition-all ${
+                        isCurrentUser
+                          ? "ring-2 ring-stone-400 bg-stone-50"
+                          : "bg-stone-50/50"
+                      }`}
+                      style={{
+                        backgroundColor: isCurrentUser ? "#ebe0d6" : "#ebe0d6",
+                      }}
+                    >
+                      <div className="flex items-start gap-3">
+                        <Avatar
+                          className={`h-10 w-10 border-2 ${
+                            isCurrentUser
+                              ? "border-stone-400"
+                              : "border-stone-200"
+                          } mt-1`}
+                        >
+                          <AvatarImage
+                            src={`https://cdn.discordapp.com/avatars/${user?.id}/${user?.avatar}`}
+                            alt={user?.name}
+                          />
+                          <AvatarFallback className="bg-stone-200 text-stone-800 text-xs">
+                            {user?.name.slice(0, 5).toUpperCase()}
+                          </AvatarFallback>
+                        </Avatar>
+                        <div className="flex-1">
+                          <div className="flex justify-between items-center mb-1">
+                            <h3 className="font-bold text-stone-900">
+                              {quote.author}{" "}
+                              <span className="italic font-normal text-neutral-500">
+                                disse:
+                              </span>
+                            </h3>
+                            {isCurrentUser && (
+                              <Button
+                                size="sm"
+                                variant="ghost"
+                                className="h-8 w-8 p-0 rounded-full text-stone-700 hover:text-stone-900 hover:bg-stone-200 transition-colors"
+                                onClick={() => onQuoteAction(quote)}
+                              >
+                                <Edit className="h-4 w-4" />
+                                <span className="sr-only">Editar citação</span>
+                              </Button>
+                            )}
+                          </div>
+                          <p className="text-stone-900">{quote.quote}</p>
+                          <div className="flex justify-between items-center mt-2">
+                            <p className="text-sm text-neutral-500 font-medium">
+                              — {user?.name}
+                            </p>
+                            <p className="text-xs text-stone-600">
+                              Postado hoje às {format(quote.date, "HH:mm")}
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              );
+            })
         ) : (
-          <div className="text-lg text-center translate-x-2/4 text-neutral-500 font-bold w-full">
+          <div className="text-lg text-center md:translate-x-2/4 text-neutral-500 font-bold w-full">
             Nenhuma citação foi adiconada hoje!
           </div>
         )}

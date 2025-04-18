@@ -128,3 +128,18 @@ body {
   font-weight: bold;
   color: #dc2626;
 }
+
+@keyframes fillFromBottom {
+  0% {
+    clip-path: inset(100% 0 0 0); /* Start fully hidden */
+    fill: transparent;
+  }
+  100% {
+    fill: #ff4500;
+    clip-path: inset(0 0 0 0); /* Fully visible */
+  }
+}
+
+.flame-animate {
+  animation: fillFromBottom 1.25s ease-in-out forwards;
+}

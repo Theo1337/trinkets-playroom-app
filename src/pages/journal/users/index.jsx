@@ -16,7 +16,7 @@ import { OrbitProgress } from "react-loading-indicators";
 import Head from "next/head";
 
 import { MoveLeft } from "lucide-react";
-import { GoBackButton } from "@/components";
+import { GoBackButton, Header } from "@/components";
 
 export default function UsersPage() {
   const [users, setUsers] = useState([]);
@@ -44,12 +44,11 @@ export default function UsersPage() {
         <meta name="theme-color" content="#fef2f2 " />
         <meta name="theme_color" content="#fef2f2 " />
       </Head>
-      <div className="flex items-center justify-center flex-col gap-2">
-        <div className="font-logo text-4xl text-neutral-700 ">Diário</div>
-        <div className="text-xs text-neutral-500 uppercase">
-          {"Diário para anotar seus sentimentos!"}
-        </div>
-      </div>
+      <Header
+        title="Diário"
+        description="Diário para anotar seus sentimentos!"
+        className="mb-8"
+      />
       <Card className="w-full border-red-200 max-w-md -mt-[125%] md:-mt-[28%]">
         <CardHeader className="text-center">
           <CardTitle className="text-3xl font-bold">

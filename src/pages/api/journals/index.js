@@ -14,16 +14,13 @@ export default async function handler(req, res) {
 
     return res.status(200).json(journals);
   } else if (req.method === "GET") {
-    const { userId, date } = req.query;
-
-    if (!userId) {
-      return res.status(400).json({ error: "User ID is required" });
-    }
+    const { id, userId, date } = req.query;
 
     // Fetch by userId and optionally by date
     const journals = await prisma.journals.findMany({
       where: {
-        userId: userId,
+        ...(id && { id: id }),
+        ...(userId && { userId: userId }),
         ...(date && { date: date }), // Include date conditionally if provided
       },
     });

@@ -5,7 +5,7 @@ import { prisma } from "@/lib/database";
 
 import { setDefaultOptions } from "date-fns";
 
-import { Section, GoBackButton } from "../../components";
+import { Section, GoBackButton, Header } from "../../components";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -183,12 +183,10 @@ function Home({ rawCounters }) {
       </Head>
       <GoBackButton />
       <div className="flex flex-col items-center justify-start min-h-screen p-8 pt-16 bg-purple-100 text-black">
-        <div className="font-logo text-4xl text-neutral-700 mt-1">
-          Contadores
-        </div>
-        <div className="text-xs text-neutral-500 mt-2 uppercase">
-          {"Contadores inúteis para coisas inúteis!"}
-        </div>
+        <Header
+          title="Contadores"
+          description="Contadores inúteis para coisas inúteis!"
+        />
 
         <DrawerContent className="bg-white flex flex-col gap-2">
           <DrawerHeader>

@@ -18,7 +18,7 @@ import {
   ArrowLeft,
   Trash2,
   CheckCircle2,
-  MoveLeft,
+  Calendar,
 } from "lucide-react";
 import {
   Dialog,
@@ -48,7 +48,8 @@ import {
 } from "@/lib/journal-service";
 import styles from "./journal.module.css";
 import Head from "next/head";
-import { GoBackButton } from "@/components";
+import { GoBackButton, Header } from "@/components";
+import { Textarea } from "@/components/ui/textarea";
 
 export default function JournalPage() {
   const router = useRouter();
@@ -58,6 +59,7 @@ export default function JournalPage() {
   const editorRef = useRef(null);
   const [content, setContent] = useState("");
   const [title, setTitle] = useState("");
+  const [comment, setComment] = useState("");
   const [userId, setUserId] = useState(null);
   const [date, setDate] = useState("");
   const [entry, setEntry] = useState(null);
@@ -96,6 +98,7 @@ export default function JournalPage() {
       if (existingEntry) {
         setEntry(existingEntry);
         setTitle(existingEntry.title || "");
+        setComment(existingEntry.comment || "");
         if (editorRef.current) {
           editorRef.current.innerHTML = existingEntry.content;
           setContent(existingEntry.content);
@@ -165,27 +168,58 @@ export default function JournalPage() {
   const saveContent = async () => {
     if (!userId || !date || !editorRef.current) return;
 
-    setIsSaving(true);
-
     const currentContent = editorRef.current.innerHTML;
+
+    // Check if the content or title has changed
+    if (
+      currentContent.trim() === entry?.content?.trim() &&
+      title.trim() === entry?.title?.trim() &&
+      comment.trim() === entry?.comment?.trim()
+    ) {
+      console.log("No changes detected. Save operation skipped.");
+      return;
+    }
+
+    setIsSaving(true);
     setContent(currentContent);
 
-    // Save to database
-    const updatedEntry = await saveJournalEntry({
-      id: entry?.id,
-      userId,
-      date,
-      title,
-      content: currentContent,
-      isPasswordProtected: entry?.isPasswordProtected || false,
-      password: entry?.password || "",
-    });
+    try {
+      // Save to database
+      const updatedEntry = await saveJournalEntry({
+        id: entry?.id || null, // Use existing ID or null for a new entry
+        userId,
+        date,
+        title,
+        content: currentContent,
+        isPasswordProtected: entry?.isPasswordProtected || false,
+        password: entry?.password || "",
+        currentUserId: JSON.parse(localStorage.getItem("user")).id,
+        comment: comment,
+      });
 
-    setEntry(updatedEntry);
-    setIsSaving(false);
+      if (updatedEntry && updatedEntry.id) {
+        // Update the entry state with the saved entry
+        setEntry(updatedEntry);
+      } else {
+        console.error(
+          "Failed to save entry: No ID returned from saveJournalEntry."
+        );
+      }
 
-    // Exibir toast de sucesso
-    displayToast("Diário salvo com sucesso!", "Suas anotações foram salvas.");
+      setIsSaving(false);
+
+      // Display success toast
+      displayToast("Diário salvo com sucesso!", "Suas anotações foram salvas.");
+    } catch (error) {
+      console.error("Error saving entry:", error);
+      setIsSaving(false);
+
+      // Display error toast
+      displayToast(
+        "Erro ao salvar diário",
+        "Não foi possível salvar suas anotações."
+      );
+    }
   };
 
   const handleLock = () => {
@@ -251,10 +285,10 @@ export default function JournalPage() {
         <meta name="theme_color" content="#fef2f2 " />
       </Head>
       <div className="flex items-center justify-center flex-col gap-2 pt-12">
-        <div className="font-logo text-4xl text-neutral-700 ">Diário</div>
-        <div className="text-xs text-neutral-500 uppercase">
-          {"Diário para anotar seus sentimentos!"}
-        </div>
+        <Header
+          title="Diário"
+          description="Diário para anotar seus sentimentos!"
+        />
       </div>
       <div className={styles.journalPage}>
         {/* Toast personalizado */}
@@ -371,6 +405,13 @@ export default function JournalPage() {
                 {entry?.isPasswordProtected ? "Alterar Senha" : "Bloquear"}
               </button>
               <button
+                className={styles.actionButton}
+                onClick={() => router.back()}
+              >
+                <Calendar size={16} />
+                Voltar
+              </button>
+              <button
                 className={`${styles.actionButton} ${styles.saveButton}`}
                 onClick={saveContent}
                 disabled={isSaving}
@@ -388,6 +429,27 @@ export default function JournalPage() {
             suppressContentEditableWarning={true}
             data-placeholder="Escreva aqui..."
           />
+        </div>
+        <div className="text-lg font-bold text-red-800">Comentário</div>
+        <div className="flex flex-col items-end justify-center gap-2">
+          <Textarea
+            type="text"
+            placeholder="Adcione o seu comentário aqui..."
+            value={comment}
+            onChange={(e) => setComment(e.target.value)}
+            homeInput
+            className={
+              "w-full rounded-lg p-2 focus-visible:ring-red-900 focus-visible:ring-offset-1 focus-visible:ring-2 outline-none bg-white resize-none mt-1 min-h-44"
+            }
+          />
+          <button
+            className={`${styles.actionButton} ${styles.saveButton} mx-0.5`}
+            onClick={saveContent}
+            disabled={isSaving}
+          >
+            <Save size={16} />
+            {isSaving ? "Salvando..." : "Salvar comentário"}
+          </button>
         </div>
         {/* Mantendo os componentes de diálogo do shadcn/ui */}
         <Dialog open={passwordDialogOpen} onOpenChange={setPasswordDialogOpen}>

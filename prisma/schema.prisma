@@ -55,6 +55,7 @@ model Journals {
     password String?
     userId String
     date String
+    comment String?
 }
 
 model Subscription {
