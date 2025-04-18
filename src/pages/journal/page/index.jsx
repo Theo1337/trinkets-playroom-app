@@ -405,13 +405,6 @@ export default function JournalPage() {
                 {entry?.isPasswordProtected ? "Alterar Senha" : "Bloquear"}
               </button>
               <button
-                className={styles.actionButton}
-                onClick={() => router.back()}
-              >
-                <Calendar size={16} />
-                Voltar
-              </button>
-              <button
                 className={`${styles.actionButton} ${styles.saveButton}`}
                 onClick={saveContent}
                 disabled={isSaving}
