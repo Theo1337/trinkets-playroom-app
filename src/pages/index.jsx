@@ -861,7 +861,7 @@ function QuotesSection({
               }`}
             />
             <div className="font-bold">
-              {streak} {streak === 1 ? "dia seguido" : "dias seguidos"}...
+              {streak} {streak === 1 ? "dia" : "dias"}...
             </div>
           </div>
         </span>
