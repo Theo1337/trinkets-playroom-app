@@ -318,7 +318,7 @@ function Home() {
   const [phase, setPhase] = useState(null);
 
   useEffect(() => {
-    setPhase(<FinalPhase setPhase={setPhase} />);
+    setPhase(<FirstPhase setPhase={setPhase} />);
   }, []);
 
   return (
