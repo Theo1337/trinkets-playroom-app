@@ -422,7 +422,7 @@ export default function MovieCarousel({ rawMovies }) {
             body: `${JSON.parse(localStorage.getItem("user")).name} editou ${
               editingMovie.type === "movie" ? "um filme" : "uma série"
             } na lista!`,
-            url: "/;list",
+            url: "/list",
             userId: JSON.parse(localStorage.getItem("user")).id,
           });
           // Reset form
