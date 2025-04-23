@@ -40,6 +40,7 @@ import {
   BellOff,
   Trash,
   Flame,
+  Heart,
 } from "lucide-react";
 import Link from "next/link";
 import { useState, useEffect } from "react";
@@ -439,8 +440,11 @@ export default function Home({ rawQuotes }) {
         className="py-6 mt-8 border-t border-stone-200"
         style={{ backgroundColor: "#ebe0d6" }}
       >
-        <div className="container mx-auto px-4 text-center text-stone-700 text-sm">
-          <p>© 2025 Cafofo Estelar. Todos os direitos reservados.</p>
+        <div className="container mx-auto px-4 text-center text-stone-700 text-sm flex items-center justify-center gap-2">
+          © 2025 Cafofo Estelar. Todos os direitos reservados.
+          <Link href="/surprise">
+            <Heart className="h-4 w-4 hover:text-red-500 hover:fill-red-500 hover:scale-125 transition cursor-pointer" />
+          </Link>
         </div>
       </footer>
 
