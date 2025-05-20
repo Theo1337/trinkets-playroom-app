@@ -1,4 +1,4 @@
-// Version: 1.1.0
+// Version: 3.0.0
 self.addEventListener("push", (event) => {
   const data = event.data.json();
   const title = data.title || "Cafofo Estelar";
