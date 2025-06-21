@@ -286,6 +286,49 @@ export default function Home({ rawQuotes }) {
         .find((quote) => quote.authorId === selectedUser.id)
     : null;
 
+  const userIdToName = {
+    "277539638397370369": "Theo",
+    "1250558369937363107": "Ana",
+  };
+
+  const findLastMissingDate = () => {
+    // Only consider the two main users
+    const userIds = ["277539638397370369", "1250558369937363107"];
+    const sortedQuotes = [...quotesData].sort(
+      (a, b) => new Date(b.date) - new Date(a.date)
+    );
+    let currentDate = adjustToBrazilianTime(new Date());
+    // Check up to 30 days in the past
+    for (let i = 0; i < 30; i++) {
+      const missingUserIds = userIds.filter(
+        (id) =>
+          !sortedQuotes.some(
+            (q) =>
+              q.authorId === id &&
+              isSameDay(adjustToBrazilianTime(new Date(q.date)), currentDate)
+          )
+      );
+      if (missingUserIds.length > 0) {
+        const missingNames = missingUserIds
+          .map((id) => userIdToName[id] || id)
+          .join(", ");
+        console.error(
+          `Último dia com citação faltando: \n${format(
+            currentDate,
+            "dd/MM/yyyy"
+          )} — Faltou: ${missingNames}`
+        );
+        return { date: currentDate, missingUserIds };
+      }
+      currentDate = subDays(currentDate, 1);
+    }
+    return null; // All days are filled
+  };
+
+  useEffect(() => {
+    findLastMissingDate();
+  }, [quotesData]);
+
   return (
     <div
       className="min-h-screen relative cafofo-page"

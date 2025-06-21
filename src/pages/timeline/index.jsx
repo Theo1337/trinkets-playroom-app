@@ -19,6 +19,8 @@ import {
   subMonths,
   getYear,
   setYear,
+  startOfWeek,
+  endOfWeek,
 } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import {
@@ -168,9 +170,14 @@ export default function Home({ rawEvents }) {
   };
 
   // Get days in current month for calendar view
-  const monthStart = startOfMonth(currentMonth);
-  const monthEnd = endOfMonth(currentMonth);
-  const daysInMonth = eachDayOfInterval({ start: monthStart, end: monthEnd });
+  const calendarStart = startOfWeek(startOfMonth(currentMonth), {
+    weekStartsOn: 0,
+  }); // Sunday
+  const calendarEnd = endOfWeek(endOfMonth(currentMonth), { weekStartsOn: 0 });
+  const daysInCalendar = eachDayOfInterval({
+    start: calendarStart,
+    end: calendarEnd,
+  });
 
   // Get entries for selected day
   const selectedDayEntries = selectedDay
@@ -593,7 +600,7 @@ export default function Home({ rawEvents }) {
 
               {/* Calendar grid */}
               <div className="grid grid-cols-7 gap-1">
-                {daysInMonth.map((day, i) => {
+                {daysInCalendar.map((day, i) => {
                   const dayEntries = getDayEntries(day);
                   const hasEntries = dayEntries.length > 0;
                   const hasHeartedEntries = dayEntries.some(
