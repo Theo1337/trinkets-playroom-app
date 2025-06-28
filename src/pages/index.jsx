@@ -292,37 +292,52 @@ export default function Home({ rawQuotes }) {
   };
 
   const findLastMissingDate = () => {
-    // Only consider the two main users
     const userIds = ["277539638397370369", "1250558369937363107"];
-    const sortedQuotes = [...quotesData].sort(
-      (a, b) => new Date(b.date) - new Date(a.date)
-    );
-    let currentDate = adjustToBrazilianTime(new Date());
-    // Check up to 30 days in the past
-    for (let i = 0; i < 30; i++) {
-      const missingUserIds = userIds.filter(
-        (id) =>
-          !sortedQuotes.some(
-            (q) =>
-              q.authorId === id &&
-              isSameDay(adjustToBrazilianTime(new Date(q.date)), currentDate)
-          )
-      );
-      if (missingUserIds.length > 0) {
-        const missingNames = missingUserIds
+    const userIdToName = {
+      "277539638397370369": "Theo",
+      "1250558369937363107": "Ana",
+    };
+
+    // Helper: get date at midnight in Brazilian time (UTC-3)
+    const toBrazilMidnight = (date) => {
+      const brDate = addHours(new Date(date), -3);
+      brDate.setHours(0, 0, 0, 0);
+      return brDate;
+    };
+
+    // Build a map: { [brazilMidnightISOString]: Set of userIds who posted }
+    const dateMap = {};
+    for (const q of quotesData) {
+      const day = toBrazilMidnight(q.date).toISOString();
+      if (!dateMap[day]) dateMap[day] = new Set();
+      dateMap[day].add(q.authorId);
+    }
+
+    // Start from yesterday (to avoid warning for today if it's not finished)
+    let current = new Date();
+    current = addHours(current, -3);
+    current.setHours(0, 0, 0, 0);
+    current = subDays(current, 1);
+
+    for (let i = 0; i < 90; i++) {
+      const dayKey = toBrazilMidnight(current).toISOString();
+      const posted = dateMap[dayKey] || new Set();
+      const missing = userIds.filter((id) => !posted.has(id));
+      if (missing.length > 0) {
+        const missingNames = missing
           .map((id) => userIdToName[id] || id)
           .join(", ");
         console.error(
-          `Último dia com citação faltando: \n${format(
-            currentDate,
+          `Último dia com citação faltando: ${format(
+            current,
             "dd/MM/yyyy"
           )} — Faltou: ${missingNames}`
         );
-        return { date: currentDate, missingUserIds };
+        return { date: new Date(current), missingUserIds: missing };
       }
-      currentDate = subDays(currentDate, 1);
+      current = subDays(current, 1);
     }
-    return null; // All days are filled
+    return null;
   };
 
   useEffect(() => {

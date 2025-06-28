@@ -13,22 +13,24 @@ import {
   Pencil,
   Clapperboard,
   Tv,
-  MoveLeft,
+  Shuffle,
+  Dice6,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { motion, AnimatePresence } from "framer-motion";
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
+  DialogFooter,
 } from "@/components/ui/dialog";
 import {
   Drawer,
   DrawerContent,
   DrawerHeader,
   DrawerTitle,
-  DrawerClose,
 } from "@/components/ui/drawer";
 import { Input } from "@/components/ui/input";
 import { Calendar } from "@/components/ui/calendar";
@@ -56,7 +58,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
-import { format, setDefaultOptions } from "date-fns";
+import { format, set, setDefaultOptions } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { useMediaQuery } from "@/hooks/use-mobile";
 
@@ -110,6 +112,11 @@ export default function MovieCarousel({ rawMovies }) {
   const [filterByDate, setFilterByDate] = useState(null);
   const [user, setUser] = useState(null);
   const [users, setUsers] = useState([]);
+  const [randomItem, setRandomItem] = useState(null);
+  const [isRandomItemOpen, setIsRandomItemOpen] = useState(false);
+  const [isShuffling, setIsShuffling] = useState(false);
+  const [shuffleItems, setShuffleItems] = useState([]);
+  const [currentShuffleIndex, setCurrentShuffleIndex] = useState(0);
 
   const [configs, setConfigs] = useState({
     timeout: null,
@@ -525,6 +532,51 @@ export default function MovieCarousel({ rawMovies }) {
         setMainSearchQuery("");
         break;
     }
+  };
+
+  const getRandomFromList = () => {
+    const unwatched = allMovies.filter((each) => each.watched === false);
+    if (unwatched.length === 0) {
+      setRandomItem(null);
+      setIsRandomItemOpen(true);
+      return;
+    }
+
+    // Create shuffle animation
+    setIsShuffling(true);
+    setIsRandomItemOpen(true);
+
+    // Generate random sequence for animation
+    const shuffleSequence = [];
+    for (let i = 0; i < 20; i++) {
+      shuffleSequence.push(
+        unwatched[Math.floor(Math.random() * unwatched.length)]
+      );
+    }
+
+    // Add the final selection
+    const finalSelection =
+      unwatched[Math.floor(Math.random() * unwatched.length)];
+    shuffleSequence.push(finalSelection);
+
+    setShuffleItems(shuffleSequence);
+    setCurrentShuffleIndex(0);
+
+    // Animate through the sequence
+    let index = 0;
+    const shuffleInterval = setInterval(
+      () => {
+        setCurrentShuffleIndex(index);
+        index++;
+
+        if (index >= shuffleSequence.length) {
+          clearInterval(shuffleInterval);
+          setIsShuffling(false);
+          setRandomItem(finalSelection);
+        }
+      },
+      index < 15 ? 100 : 200 + (index - 15) * 50
+    ); // Slow down towards the end
   };
 
   // Content for edit mode
@@ -1115,6 +1167,17 @@ export default function MovieCarousel({ rawMovies }) {
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
+              <div>
+                <Button
+                  variant="outline"
+                  className="border-muted-foreground bg-white/15 hover:bg-white/30"
+                  size="icon"
+                  onClick={getRandomFromList}
+                >
+                  <Dice6 className="h-4 w-4" />
+                  <span className="sr-only">Filter</span>
+                </Button>
+              </div>
             </div>
             {/* Active filters */}
             {(filterByGenre ||
@@ -1757,6 +1820,167 @@ export default function MovieCarousel({ rawMovies }) {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
+
+      {/* Random Item Dialog */}
+      <Dialog open={isRandomItemOpen} onOpenChange={setIsRandomItemOpen}>
+        <DialogContent className="max-w-[400px] bg-white">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <motion.div
+                animate={isShuffling ? { rotate: 360 } : { rotate: 0 }}
+                transition={{
+                  duration: 0.5,
+                  repeat: isShuffling ? Number.POSITIVE_INFINITY : 0,
+                  ease: "linear",
+                }}
+              >
+                <Shuffle className="h-5 w-5" />
+              </motion.div>
+              {isShuffling ? "Sorteando..." : "Filme/Série Sorteado"}
+            </DialogTitle>
+          </DialogHeader>
+
+          <div className="flex flex-col items-center gap-4 min-h-[400px] justify-center">
+            <AnimatePresence mode="wait">
+              {isShuffling && shuffleItems.length > 0 ? (
+                <motion.div
+                  key={`shuffle-${currentShuffleIndex}`}
+                  initial={{ rotateY: 90, scale: 0.8 }}
+                  animate={{ rotateY: 0, scale: 1 }}
+                  exit={{ rotateY: -90, scale: 0.8 }}
+                  transition={{ duration: 0.1 }}
+                  className="flex flex-col items-center gap-4"
+                >
+                  <div className="relative">
+                    <Image
+                      src={
+                        shuffleItems[currentShuffleIndex]?.image ||
+                        "/placeholder.svg?height=225&width=150"
+                      }
+                      alt={shuffleItems[currentShuffleIndex]?.name || ""}
+                      width={150}
+                      height={225}
+                      className="rounded-md object-cover"
+                    />
+                    <motion.div
+                      className="absolute inset-0 bg-gradient-to-r from-blue-500/20 to-purple-500/20 rounded-md"
+                      animate={{ opacity: [0, 1, 0] }}
+                      transition={{
+                        duration: 0.2,
+                        repeat: Number.POSITIVE_INFINITY,
+                      }}
+                    />
+                  </div>
+                  <div className="text-lg font-bold text-center">
+                    {shuffleItems[currentShuffleIndex]?.name}
+                  </div>
+                  <div className="text-sm text-muted-foreground">
+                    {shuffleItems[currentShuffleIndex]?.type === "movie"
+                      ? "Filme"
+                      : "Série"}
+                  </div>
+                </motion.div>
+              ) : randomItem ? (
+                <motion.div
+                  key="final-result"
+                  initial={{ scale: 0.5, opacity: 0 }}
+                  animate={{ scale: 1, opacity: 1 }}
+                  transition={{
+                    type: "spring",
+                    stiffness: 200,
+                    damping: 15,
+                    delay: 0.2,
+                  }}
+                  className="flex flex-col items-center gap-4"
+                >
+                  <motion.div
+                    animate={{
+                      boxShadow: [
+                        "0 0 0 0 rgba(59, 130, 246, 0.7)",
+                        "0 0 0 10px rgba(59, 130, 246, 0)",
+                        "0 0 0 0 rgba(59, 130, 246, 0)",
+                      ],
+                    }}
+                    transition={{ duration: 1.5, repeat: 2 }}
+                    className="rounded-md"
+                  >
+                    <Image
+                      src={randomItem.image || "/placeholder.svg"}
+                      alt={randomItem.name}
+                      width={150}
+                      height={225}
+                      className="rounded-md object-cover"
+                    />
+                  </motion.div>
+                  <motion.div
+                    initial={{ y: 20, opacity: 0 }}
+                    animate={{ y: 0, opacity: 1 }}
+                    transition={{ delay: 0.5 }}
+                    className="text-lg font-bold text-center"
+                  >
+                    {randomItem.name}
+                  </motion.div>
+                  <motion.div
+                    initial={{ y: 20, opacity: 0 }}
+                    animate={{ y: 0, opacity: 1 }}
+                    transition={{ delay: 0.7 }}
+                    className="text-sm text-muted-foreground"
+                  >
+                    {randomItem.type === "movie" ? "Filme" : "Série"}
+                  </motion.div>
+                  <motion.div
+                    initial={{ y: 20, opacity: 0 }}
+                    animate={{ y: 0, opacity: 1 }}
+                    transition={{ delay: 0.9 }}
+                    className="flex gap-2 flex-wrap justify-center"
+                  >
+                    {randomItem.genres &&
+                      JSON.parse(randomItem.genres)
+                        .slice(0, 3)
+                        .map((genre) => (
+                          <Badge
+                            key={genre}
+                            variant="outline"
+                            className="text-xs"
+                          >
+                            {genres_ids.find((each) => each.id === genre)?.name}
+                          </Badge>
+                        ))}
+                  </motion.div>
+                </motion.div>
+              ) : (
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  className="text-center text-muted-foreground py-8"
+                >
+                  Nenhum item não assistido para sortear!
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
+
+          <DialogFooter className="flex flex-row gap-2 justify-center items-center">
+            <Button
+              variant="outline"
+              onClick={() => setIsRandomItemOpen(false)}
+              className="flex items-center gap-1 w-full"
+              disabled={isShuffling}
+            >
+              <X className="h-4 w-4" /> Fechar
+            </Button>
+            {randomItem && !isShuffling && (
+              <Button
+                variant="movie"
+                onClick={getRandomFromList}
+                className="flex items-center gap-1 w-full"
+              >
+                <Shuffle className="h-4 w-4" /> Sortear novamente
+              </Button>
+            )}
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
