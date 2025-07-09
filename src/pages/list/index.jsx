@@ -176,23 +176,23 @@ export default function MovieCarousel({ rawMovies }) {
 
   // Get unique genres, users, and dates for filters
   const allGenres = Array.from(
-    new Set(allMovies.flatMap((movie) => JSON.parse(movie.genres)))
+    new Set(allMovies.flatMap((movie) => JSON.parse(movie.genres))),
   );
   const allUsers = Array.from(
-    new Set(allMovies.map((movie) => JSON.parse(movie.addedBy).id))
+    new Set(allMovies.map((movie) => JSON.parse(movie.addedBy).id)),
   ).map(
     (id) =>
       users.find((user) => user.id === id) || {
         id,
         name: "Unknown",
         avatar: null,
-      }
+      },
   );
 
   // Count movies by user
   const moviesByUser = allUsers.reduce((acc, user) => {
     acc[user.id] = allMovies.filter(
-      (movie) => JSON.parse(movie.addedBy).id === user.id
+      (movie) => JSON.parse(movie.addedBy).id === user.id,
     ).length;
     return acc;
   }, {});
@@ -242,7 +242,7 @@ export default function MovieCarousel({ rawMovies }) {
       .get(
         `/movie/search?name=${name
           .replace(/\((\d{4})\)/, "")
-          .toLowerCase()}&year=${year}&type=${type ? type : searchType}`
+          .toLowerCase()}&year=${year}&type=${type ? type : searchType}`,
       )
       .then((res) => {
         setSearchResults(res.data);
@@ -421,8 +421,8 @@ export default function MovieCarousel({ rawMovies }) {
         .then((res) => {
           setAllMovies(
             allMovies.map((each) =>
-              each.id === editingMovie.id ? res.data : each
-            )
+              each.id === editingMovie.id ? res.data : each,
+            ),
           );
 
           api.post("/notifications", {
@@ -550,7 +550,7 @@ export default function MovieCarousel({ rawMovies }) {
     const shuffleSequence = [];
     for (let i = 0; i < 20; i++) {
       shuffleSequence.push(
-        unwatched[Math.floor(Math.random() * unwatched.length)]
+        unwatched[Math.floor(Math.random() * unwatched.length)],
       );
     }
 
@@ -575,7 +575,7 @@ export default function MovieCarousel({ rawMovies }) {
           setRandomItem(finalSelection);
         }
       },
-      index < 15 ? 100 : 200 + (index - 15) * 50
+      index < 15 ? 100 : 200 + (index - 15) * 50,
     ); // Slow down towards the end
   };
 
@@ -658,7 +658,7 @@ export default function MovieCarousel({ rawMovies }) {
                       "flex-none w-[160px] h-min cursor-pointer rounded-md m-2",
                       selectedMovie?.id === movie.id
                         ? "ring-2 ring-primary"
-                        : ""
+                        : "",
                     )}
                     onClick={() => {
                       handleSelectMovie(movie);
@@ -678,7 +678,7 @@ export default function MovieCarousel({ rawMovies }) {
                           "w-full h-full rounded-t",
                           movie.poster_path
                             ? "object-cover"
-                            : "opacity-50 object-cover scale-105"
+                            : "opacity-50 object-cover scale-105",
                         )}
                       />
                     </div>
@@ -764,7 +764,7 @@ export default function MovieCarousel({ rawMovies }) {
                           users.length > 0
                             ? users.find(
                                 (u) =>
-                                  u.id === JSON.parse(editingMovie.addedBy).id
+                                  u.id === JSON.parse(editingMovie.addedBy).id,
                               ).avatar
                             : JSON.parse(editingMovie.addedBy).avatar
                         }.png`}
@@ -777,7 +777,7 @@ export default function MovieCarousel({ rawMovies }) {
                         {users.length > 0
                           ? users.find(
                               (u) =>
-                                u.id === JSON.parse(editingMovie.addedBy).id
+                                u.id === JSON.parse(editingMovie.addedBy).id,
                             ).name
                           : JSON.parse(editingMovie.addedBy).name}
                       </div>
@@ -807,7 +807,7 @@ export default function MovieCarousel({ rawMovies }) {
                     "h-4 w-4",
                     isWatched
                       ? "text-primary-foreground"
-                      : "text-muted-foreground"
+                      : "text-muted-foreground",
                   )}
                 />
                 {isWatched ? "Assistido" : "Marcar como assistido"}
@@ -939,7 +939,7 @@ export default function MovieCarousel({ rawMovies }) {
                         "flex-none w-[160px] h-min cursor-pointer rounded-md m-2",
                         selectedMovie?.id === movie.id
                           ? "ring-2 ring-primary"
-                          : ""
+                          : "",
                       )}
                       onClick={() => handleSelectMovie(movie)}
                     >
@@ -959,7 +959,7 @@ export default function MovieCarousel({ rawMovies }) {
                             "w-full h-full rounded-t",
                             movie.poster_path
                               ? "object-cover"
-                              : "opacity-50 object-cover scale-105"
+                              : "opacity-50 object-cover scale-105",
                           )}
                         />
                       </div>
@@ -1024,7 +1024,7 @@ export default function MovieCarousel({ rawMovies }) {
                       "h-4 w-4",
                       isWatched
                         ? "text-primary-foreground"
-                        : "text-muted-foreground"
+                        : "text-muted-foreground",
                     )}
                   />
                   {isWatched ? "Assistido" : "Marcar como assistido"}
@@ -1059,7 +1059,7 @@ export default function MovieCarousel({ rawMovies }) {
         </div>
       </div>
       <Button variant="movie" onClick={handleAddMovie} className="w-full">
-        Adcionar {searchType === "movie" ? "filme" : "série"}
+        Adicionar {searchType === "movie" ? "filme" : "série"}
       </Button>
     </div>
   );
@@ -1275,7 +1275,7 @@ export default function MovieCarousel({ rawMovies }) {
             <div
               className={cn(
                 "absolute left-0 top-0 bottom-0 w-12 bg-gradient-to-r from-background to-transparent z-10 pointer-events-none hidden md:block transition-opacity duration-300",
-                isAtStart ? "opacity-0" : "opacity-100"
+                isAtStart ? "opacity-0" : "opacity-100",
               )}
             ></div>
             {/* Scrollable container */}
@@ -1305,7 +1305,7 @@ export default function MovieCarousel({ rawMovies }) {
                           "w-full h-full object-cover transition-all duration-300",
                           movie.watched
                             ? "brightness-[0.6]"
-                            : "group-hover:brightness-[0.9]"
+                            : "group-hover:brightness-[0.9]",
                         )}
                       />
                       {/* Watched indicator - hidden on hover */}
@@ -1336,7 +1336,7 @@ export default function MovieCarousel({ rawMovies }) {
                               "h-8 w-8 rounded-full border-white",
                               movie.watched
                                 ? "bg-white text-black"
-                                : "bg-white/40 text-white hover:bg-white/60 hover:text-white"
+                                : "bg-white/40 text-white hover:bg-white/60 hover:text-white",
                             )}
                             onClick={(e) => {
                               e.stopPropagation();
@@ -1356,8 +1356,8 @@ export default function MovieCarousel({ rawMovies }) {
                                 .then((res) => {
                                   setAllMovies(
                                     allMovies.map((each) =>
-                                      each.id === movie.id ? res.data : each
-                                    )
+                                      each.id === movie.id ? res.data : each,
+                                    ),
                                   );
                                 });
                             }}
@@ -1401,7 +1401,7 @@ export default function MovieCarousel({ rawMovies }) {
                             "font-medium text-sm truncate flex-1",
                             movie.watched && movie.dateWatched
                               ? " max-w-[135px]"
-                              : " max-w-[200px]"
+                              : " max-w-[200px]",
                           )}
                           title={movie.name}
                         >
@@ -1446,7 +1446,7 @@ export default function MovieCarousel({ rawMovies }) {
                           }/${
                             users.length > 0
                               ? users.find(
-                                  (u) => u.id === JSON.parse(movie.addedBy).id
+                                  (u) => u.id === JSON.parse(movie.addedBy).id,
                                 ).avatar
                               : JSON.parse(movie.addedBy).avatar
                           }.png`}
@@ -1458,7 +1458,7 @@ export default function MovieCarousel({ rawMovies }) {
                         <span className="truncate font-bold">
                           {users.length > 0
                             ? users.find(
-                                (u) => u.id === JSON.parse(movie.addedBy).id
+                                (u) => u.id === JSON.parse(movie.addedBy).id,
                               ).name
                             : JSON.parse(movie.addedBy).name}
                         </span>
@@ -1489,7 +1489,7 @@ export default function MovieCarousel({ rawMovies }) {
             <div
               className={cn(
                 "absolute right-0 top-0 bottom-0 w-12 bg-gradient-to-l from-background to-transparent z-10 pointer-events-none hidden md:block transition-opacity duration-300",
-                isAtEnd ? "opacity-0" : "opacity-100"
+                isAtEnd ? "opacity-0" : "opacity-100",
               )}
             ></div>
           </div>
@@ -1534,7 +1534,7 @@ export default function MovieCarousel({ rawMovies }) {
             <div
               className={cn(
                 "absolute left-0 top-0 bottom-0 w-12 bg-gradient-to-r from-background to-transparent z-10 pointer-events-none hidden md:block transition-opacity duration-300",
-                tvIsAtStart ? "opacity-0" : "opacity-100"
+                tvIsAtStart ? "opacity-0" : "opacity-100",
               )}
             ></div>
             {/* Scrollable container */}
@@ -1564,7 +1564,7 @@ export default function MovieCarousel({ rawMovies }) {
                           "w-full h-full object-cover transition-all duration-300",
                           movie.watched
                             ? "brightness-[0.6]"
-                            : "group-hover:brightness-[0.9]"
+                            : "group-hover:brightness-[0.9]",
                         )}
                       />
                       {/* Watched indicator - hidden on hover */}
@@ -1595,7 +1595,7 @@ export default function MovieCarousel({ rawMovies }) {
                               "h-8 w-8 rounded-full border-white",
                               movie.watched
                                 ? "bg-white text-black"
-                                : "bg-white/40 text-white hover:bg-white/60 hover:text-white"
+                                : "bg-white/40 text-white hover:bg-white/60 hover:text-white",
                             )}
                             onClick={(e) => {
                               e.stopPropagation();
@@ -1615,8 +1615,8 @@ export default function MovieCarousel({ rawMovies }) {
                                 .then((res) => {
                                   setAllMovies(
                                     allMovies.map((each) =>
-                                      each.id === movie.id ? res.data : each
-                                    )
+                                      each.id === movie.id ? res.data : each,
+                                    ),
                                   );
                                 });
                             }}
@@ -1660,7 +1660,7 @@ export default function MovieCarousel({ rawMovies }) {
                             "font-medium text-sm truncate flex-1",
                             movie.watched && movie.dateWatched
                               ? " max-w-[135px]"
-                              : " max-w-[200px]"
+                              : " max-w-[200px]",
                           )}
                           title={movie.name}
                         >
@@ -1705,7 +1705,7 @@ export default function MovieCarousel({ rawMovies }) {
                           }/${
                             users.length > 0
                               ? users.find(
-                                  (u) => u.id === JSON.parse(movie.addedBy).id
+                                  (u) => u.id === JSON.parse(movie.addedBy).id,
                                 ).avatar
                               : JSON.parse(movie.addedBy).avatar
                           }.png`}
@@ -1717,7 +1717,7 @@ export default function MovieCarousel({ rawMovies }) {
                         <span className="truncate font-bold">
                           {users.length > 0
                             ? users.find(
-                                (u) => u.id === JSON.parse(movie.addedBy).id
+                                (u) => u.id === JSON.parse(movie.addedBy).id,
                               ).name
                             : JSON.parse(movie.addedBy).name}
                         </span>
@@ -1748,7 +1748,7 @@ export default function MovieCarousel({ rawMovies }) {
             <div
               className={cn(
                 "absolute right-0 top-0 bottom-0 w-12 bg-gradient-to-l from-background to-transparent z-10 pointer-events-none hidden md:block transition-opacity duration-300",
-                tvIsAtEnd ? "opacity-0" : "opacity-100"
+                tvIsAtEnd ? "opacity-0" : "opacity-100",
               )}
             ></div>
           </div>
