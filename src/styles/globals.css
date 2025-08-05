@@ -135,7 +135,7 @@ body {
     fill: transparent;
   }
   100% {
-    fill: #ff4500;
+    fill: #fa01fc;
     clip-path: inset(0 0 0 0); /* Fully visible */
   }
 }

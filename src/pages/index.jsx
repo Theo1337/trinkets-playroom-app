@@ -918,7 +918,7 @@ function QuotesSection({
             <Flame
               className={`text-6xl ${
                 streak > 0
-                  ? "text-orange-700 flame-animate"
+                  ? "text-[#ae00af] flame-animate"
                   : "text-stone-700 fill-stone-500"
               }`}
             />
