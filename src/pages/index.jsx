@@ -41,6 +41,8 @@ import {
   Trash,
   Flame,
   Heart,
+  MessageCircle,
+  Timer,
 } from "lucide-react";
 import Link from "next/link";
 import { useState, useEffect } from "react";
@@ -87,12 +89,50 @@ export default function Home({ rawQuotes }) {
   const [newQuoteTitle, setNewQuoteTitle] = useState("");
   const [newQuoteContent, setNewQuoteContent] = useState("");
   const isMobile = useMediaQuery("(max-width: 768px)");
+  const [countdownVisible, setCountdownVisible] = useState(true);
 
   const [streak, setStreak] = useState(0);
+  const [countdown, setCountdown] = useState("");
 
   useEffect(() => {
     calculateStreak();
   }, [quotesData]);
+
+  useEffect(() => {
+    const getNextSaturday = () => {
+      const now = new Date();
+      const day = now.getDay();
+      const daysUntilSaturday = (6 - day + 7) % 7 || 7;
+      const nextSaturday = new Date(now);
+      nextSaturday.setDate(now.getDate() + daysUntilSaturday);
+      nextSaturday.setHours(18, 0, 0, 0);
+      return nextSaturday;
+    };
+
+    const updateCountdown = () => {
+      const now = new Date();
+      const target = getNextSaturday();
+      const diff = target - now;
+
+      if (diff <= 0) {
+        setCountdown("00:00:00:00");
+        return;
+      }
+
+      const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+      const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
+      const minutes = Math.floor((diff / (1000 * 60)) % 60);
+      const seconds = Math.floor((diff / 1000) % 60);
+
+      setCountdown(
+        `${String(days).padStart(2, "0")}:${String(hours).padStart(2, "0")}:${String(minutes).padStart(2, "0")}:${String(seconds).padStart(2, "0")}`,
+      );
+    };
+
+    updateCountdown();
+    const interval = setInterval(updateCountdown, 1000);
+    return () => clearInterval(interval);
+  }, []);
 
   const adjustToBrazilianTime = (date) => addHours(new Date(date), -3);
 
@@ -101,12 +141,12 @@ export default function Home({ rawQuotes }) {
     const filteredQuotes = quotesData.filter(
       (quote) =>
         quote.authorId === "277539638397370369" ||
-        quote.authorId === "1250558369937363107"
+        quote.authorId === "1250558369937363107",
     );
 
     // Sort quotes by date in descending order
     const sortedQuotes = [...filteredQuotes].sort(
-      (a, b) => new Date(b.date) - new Date(a.date)
+      (a, b) => new Date(b.date) - new Date(a.date),
     );
 
     let currentStreak = 0;
@@ -117,13 +157,13 @@ export default function Home({ rawQuotes }) {
       const hasUser1Quote = sortedQuotes.some(
         (quote) =>
           quote.authorId === "277539638397370369" &&
-          isSameDay(new Date(quote.date), currentDate)
+          isSameDay(new Date(quote.date), currentDate),
       );
 
       const hasUser2Quote = sortedQuotes.some(
         (quote) =>
           quote.authorId === "1250558369937363107" &&
-          isSameDay(new Date(quote.date), currentDate)
+          isSameDay(new Date(quote.date), currentDate),
       );
 
       if (hasUser1Quote && hasUser2Quote) {
@@ -170,7 +210,7 @@ export default function Home({ rawQuotes }) {
     if (user.avatar !== savedUser.avatar || user.name !== savedUser.name) {
       localStorage.setItem(
         "user",
-        JSON.stringify(savedUser ? savedUser : user)
+        JSON.stringify(savedUser ? savedUser : user),
       );
     }
 
@@ -226,7 +266,7 @@ export default function Home({ rawQuotes }) {
         })
         .then((res) => {
           setQuotesData(
-            quotesData.map((q) => (q.id === editingQuote.id ? res.data : q))
+            quotesData.map((q) => (q.id === editingQuote.id ? res.data : q)),
           );
           api.post("/notifications", {
             body: `${
@@ -286,11 +326,6 @@ export default function Home({ rawQuotes }) {
         .find((quote) => quote.authorId === selectedUser.id)
     : null;
 
-  const userIdToName = {
-    "277539638397370369": "Theo",
-    "1250558369937363107": "Ana",
-  };
-
   const findLastMissingDate = () => {
     const userIds = ["277539638397370369", "1250558369937363107"];
     const userIdToName = {
@@ -330,8 +365,8 @@ export default function Home({ rawQuotes }) {
         console.error(
           `Último dia com citação faltando: ${format(
             current,
-            "dd/MM/yyyy"
-          )} — Faltou: ${missingNames}`
+            "dd/MM/yyyy",
+          )} — Faltou: ${missingNames}`,
         );
         return { date: new Date(current), missingUserIds: missing };
       }
@@ -423,14 +458,71 @@ export default function Home({ rawQuotes }) {
           description={`Seja bem-vind${selectedUser?.pronoum} ao cantinho do Theo e da Ana!`}
           className="mb-8"
         />
-        <QuotesSection
-          selectedUser={selectedUser}
-          quotesData={quotesData}
-          onQuoteAction={handleOpenQuoteDialog}
-          currentUserQuote={currentUserQuote}
-          users={configs.users}
-          streak={streak}
-        />
+        {countdownVisible ? (
+          <div className="flex items-center justify-center gap-2 text-stone-800 mb-2">
+            <div className="bg-white rounded-lg p-4 w-4/12 text-center">
+              <div className="font-light uppercase">
+                Dias faltando para a gente se ver:
+              </div>
+              <div className="flex justify-center gap-4 mt-4">
+                {[
+                  {
+                    value: countdown.split(":")[0] || "00",
+                    label: "Dias",
+                  },
+                  {
+                    value: countdown.split(":")[1] || "00",
+                    label: "Horas",
+                  },
+                  {
+                    value: countdown.split(":")[2] || "00",
+                    label: "Min",
+                  },
+                  {
+                    value: countdown.split(":")[3] || "00",
+                    label: "Seg",
+                  },
+                ].map((unit, index) => (
+                  <div key={index} className="flex flex-col items-center px-2">
+                    <div className="text-5xl font-[Fredoka] font-medium tracking-widest">
+                      {unit.value}
+                    </div>
+                    <div className="text-xs font-light uppercase text-stone-500 mt-1">
+                      {unit.label}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        ) : (
+          <QuotesSection
+            selectedUser={selectedUser}
+            quotesData={quotesData}
+            onQuoteAction={handleOpenQuoteDialog}
+            currentUserQuote={currentUserQuote}
+            users={configs.users}
+            streak={streak}
+          />
+        )}
+        <div className="flex items-center justify-center gap-2 py-4 text-stone-800 mb-2">
+          <Button
+            onClick={() => setCountdownVisible(!countdownVisible)}
+            variant="secondary"
+          >
+            {countdownVisible ? (
+              <div className="text-neutral-600 flex gap-1 items-center justify-center">
+                <MessageCircle className="h-4 w-4" />
+                Ver citações
+              </div>
+            ) : (
+              <div className="text-neutral-600 flex gap-1 items-center justify-center">
+                <Timer className="h-4 w-4" />
+                Ver cronômetro
+              </div>
+            )}
+          </Button>
+        </div>
       </header>
 
       <main className="container mx-auto py-8 px-4">
@@ -559,7 +651,7 @@ export default function Home({ rawQuotes }) {
 
                     api.delete(`/quotes/${editingQuote.id}`).then((res) => {
                       setQuotesData(
-                        quotesData.filter((each) => each.id !== res.data.id)
+                        quotesData.filter((each) => each.id !== res.data.id),
                       );
                     });
                   }}
@@ -633,7 +725,7 @@ export default function Home({ rawQuotes }) {
 
                     api.delete(`/quotes/${editingQuote.id}`).then((res) => {
                       setQuotesData(
-                        quotesData.filter((each) => each.id !== res.data.id)
+                        quotesData.filter((each) => each.id !== res.data.id),
                       );
                     });
                   }}
@@ -732,8 +824,8 @@ function LinkCard({
   const disabledMessage = maintenance
     ? `${title} em Manutenção`
     : requiresUser && !selectedUser
-    ? "Selecione um usuário para acessar"
-    : "";
+      ? "Selecione um usuário para acessar"
+      : "";
 
   return (
     <Link
@@ -793,8 +885,8 @@ function LinkCard({
               {maintenance
                 ? "Em Breve"
                 : requiresUser && !selectedUser
-                ? "Selecione um Usuário"
-                : "Abrir"}
+                  ? "Selecione um Usuário"
+                  : "Abrir"}
             </Button>
           </div>
         </CardContent>
@@ -909,6 +1001,33 @@ function QuotesSection({
 }) {
   const adjustToBrazilianTime = (date) => addHours(new Date(date), -3);
 
+  // Find missed date(s) for the last 30 days
+  const userIds = ["277539638397370369", "1250558369937363107"];
+  const userIdToName = {
+    "277539638397370369": "Theo",
+    "1250558369937363107": "Ana",
+  };
+  // Build a map: date string (yyyy-MM-dd) => Set of userIds who posted
+  const dateMap = {};
+  for (const q of quotesData) {
+    const brDate = adjustToBrazilianTime(q.date);
+    const dateStr = format(brDate, "yyyy-MM-dd");
+    if (!dateMap[dateStr]) dateMap[dateStr] = new Set();
+    dateMap[dateStr].add(q.authorId);
+  }
+  // Find missed dates in the last 30 days
+  const missedDates = [];
+  let currentDate = adjustToBrazilianTime(new Date());
+  for (let i = 0; i < 30; i++) {
+    const dateStr = format(currentDate, "yyyy-MM-dd");
+    const posted = dateMap[dateStr] || new Set();
+    const missing = userIds.filter((id) => !posted.has(id));
+    if (missing.length > 0) {
+      missedDates.push({ date: new Date(currentDate), missing });
+    }
+    currentDate = subDays(currentDate, 1);
+  }
+
   return (
     <div className="space-y-4">
       <h2 className="text-xl font-semibold text-stone-800 mb-4 flex items-center">
@@ -929,6 +1048,20 @@ function QuotesSection({
         </span>
         <div className="h-px flex-grow bg-stone-300 ml-2"></div>
       </h2>
+      {/* Show missed dates below streak */}
+      {/* {missedDates.length > 0 && (
+        <div className="text-sm text-stone-600 mb-2">
+          Dias com citação faltando nos últimos 30 dias:
+          <br />
+          {missedDates.map(({ date, missing }) => (
+            <div key={date.toISOString()}>
+              <span className="font-bold">{format(date, "dd/MM/yyyy")}</span>
+              {": faltou "}
+              {missing.map((id) => userIdToName[id] || id).join(", ")}
+            </div>
+          ))}
+        </div>
+      )} */}
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 relative">
         {quotesData.length > 0 ? (
@@ -936,8 +1069,8 @@ function QuotesSection({
             .filter((e) =>
               isSameDay(
                 adjustToBrazilianTime(new Date(e.date)),
-                adjustToBrazilianTime(new Date())
-              )
+                adjustToBrazilianTime(new Date()),
+              ),
             )
             .map((quote) => {
               const user = users.find((u) => u.id === quote.authorId);
